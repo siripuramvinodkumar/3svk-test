@@ -138,26 +138,26 @@
         const headerLogoutBtn = document.getElementById("headerLogoutBtn");
         const welcomeMsg = document.getElementById("welcomeMsg");
 
-        // Use a direct reliable JSON feed proxy to prevent browser fetch blocks
+        // High-speed direct public news endpoint using HackerNews / open tech news API to ensure instant loading without CORS bottlenecks
         async function fetchTrendingNews() {
             const newsContainer = document.getElementById("newsTicker");
             try {
-                const response = await fetch("https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml");
-                const data = await response.json();
+                const response = await fetch("https://hacker-news.firebaseio.com/v0/topstories.json");
+                const storyIds = await response.json();
                 
-                if (data && data.items && data.items.length > 0) {
-                    let newsHtml = "<ul style='padding-left: 18px; margin: 0;'>";
-                    data.items.slice(0, 6).forEach(item => {
-                        newsHtml += `<li style="margin-bottom: 10px;"><a href="${item.link}" target="_blank" style="color: #0066cc; text-decoration: none; font-weight: bold; font-size: 13px;">${item.title}</a></li>`;
-                    });
-                    newsHtml += "</ul>";
-                    newsContainer.innerHTML = newsHtml;
-                } else {
-                    newsContainer.innerHTML = "No live news available right now.";
+                let newsHtml = "<ul style='padding-left: 18px; margin: 0;'>";
+                for (let i = 0; i < 5; i++) {
+                    const itemRes = await fetch(`https://hacker-news.firebaseio.com/v0/item/${storyIds[i]}.json`);
+                    const item = await itemRes.json();
+                    if (item && item.title && item.url) {
+                        newsHtml += `<li style="margin-bottom: 10px;"><a href="${item.url}" target="_blank" style="color: #0066cc; text-decoration: none; font-weight: bold; font-size: 13px;">${item.title}</a></li>`;
+                    }
                 }
+                newsHtml += "</ul>";
+                newsContainer.innerHTML = newsHtml;
             } catch (error) {
                 console.error("Error fetching news:", error);
-                newsContainer.innerHTML = "Check back shortly for live global updates.";
+                newsContainer.innerHTML = "Unable to load live trending news at the moment.";
             }
         }
 
