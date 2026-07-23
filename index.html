@@ -9,8 +9,14 @@
         nav { display: flex; align-items: center; gap: 20px; }
         nav a, nav button.logout-link { color: white; text-decoration: none; font-weight: bold; background: none; border: none; cursor: pointer; font-size: 16px; padding: 0; }
         nav a:hover, nav button.logout-link:hover { text-decoration: underline; }
-        .container { max-width: 1000px; margin: 40px auto; padding: 20px; text-align: center; }
-        .auth-card { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: inline-block; margin-top: 30px; width: 100%; max-width: 500px; box-sizing: border-box; }
+        .container { max-width: 1200px; margin: 30px auto; padding: 20px; }
+        
+        /* Two-Column Layout for Login Page */
+        .login-layout { display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; align-items: flex-start; margin-top: 20px; }
+        .news-sidebar { flex: 1; min-width: 300px; max-width: 500px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: left; }
+        .news-sidebar h3 { color: #0066cc; border-bottom: 2px solid #e9ecef; padding-bottom: 8px; margin-top: 0; }
+        
+        .auth-card { flex: 1; min-width: 300px; max-width: 400px; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
         .auth-btn { background: #db4437; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; width: 100%; margin-top: 10px; }
         .auth-btn:hover { background: #c23321; }
         .guest-btn { background: #6c757d; }
@@ -36,21 +42,22 @@
 
     <div class="container">
         <!-- Loading state -->
-        <div id="loadingView" style="margin-top: 50px; font-size: 18px; color: #666;">
+        <div id="loadingView" style="margin-top: 50px; font-size: 18px; color: #666; text-align: center;">
             Verifying session...
         </div>
 
-        <!-- Login Screen & Public Home Screen (Shows News + Login Options Directly) -->
-        <div id="loginView" style="display: none;">
+        <!-- Login Screen with Left-Side Free News Feed -->
+        <div id="loginView" style="display: none;" class="login-layout">
             
-            <!-- Live Worldwide Trending News Visible on Home Page Without Login -->
-            <div class="category-section" style="max-width: 600px; margin: 0 auto 30px auto;">
+            <!-- Left Sidebar: Free Live Worldwide News -->
+            <div class="news-sidebar">
                 <h3>🌐 Live Worldwide Trending News</h3>
                 <div id="newsTicker" style="font-size: 14px; color: #555; padding: 10px 0;">
                     Loading live headlines...
                 </div>
             </div>
 
+            <!-- Right Side: Login & Guest Options -->
             <div class="auth-card">
                 <h2>Sign in to 3SVK</h2>
                 <p>Access professional study materials via Google or browse instantly as a guest.</p>
@@ -131,7 +138,7 @@
         const headerLogoutBtn = document.getElementById("headerLogoutBtn");
         const welcomeMsg = document.getElementById("welcomeMsg");
 
-        // Live News Fetcher Function using GNews API
+        // Free Live News Fetcher Function using GNews API
         async function fetchTrendingNews() {
             const newsContainer = document.getElementById("newsTicker");
             const API_KEY = "f49d968a27d10cd6903220dbcdbe070e"; 
@@ -144,7 +151,7 @@
                 if (data && data.articles && data.articles.length > 0) {
                     let newsHtml = "<ul style='padding-left: 20px; margin: 0; text-align: left;'>";
                     data.articles.forEach(article => {
-                        newsHtml += `<li style="margin-bottom: 8px;"><a href="${article.url}" target="_blank" style="color: #0066cc; text-decoration: none;">${article.title}</a> <span style="font-size: 11px; color: #886;">(${article.source.name})</span></li>`;
+                        newsHtml += `<li style="margin-bottom: 10px;"><a href="${article.url}" target="_blank" style="color: #0066cc; text-decoration: none; font-weight: bold;">${article.title}</a> <br><span style="font-size: 11px; color: #888;">Source: ${article.source.name}</span></li>`;
                     });
                     newsHtml += "</ul>";
                     newsContainer.innerHTML = newsHtml;
@@ -157,7 +164,7 @@
             }
         }
 
-        // Fetch news immediately when the home page loads (no login needed)
+        // Fetch news immediately when the page loads (completely free and unauthenticated)
         fetchTrendingNews();
 
         setPersistence(auth, browserLocalPersistence).then(() => {
@@ -180,7 +187,7 @@
                 }
             } else {
                 portalView.style.display = "none";
-                loginView.style.display = "block";
+                loginView.style.display = "flex";
                 headerLogoutBtn.style.display = "none";
                 welcomeMsg.innerText = "";
             }
