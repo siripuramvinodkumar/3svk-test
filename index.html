@@ -9,13 +9,14 @@
         nav { display: flex; align-items: center; gap: 20px; }
         nav a, nav button.logout-link { color: white; text-decoration: none; font-weight: bold; background: none; border: none; cursor: pointer; font-size: 16px; padding: 0; }
         nav a:hover, nav button.logout-link:hover { text-decoration: underline; }
-        .container { max-width: 1200px; margin: 30px auto; padding: 20px; text-align: center; }
+        .container { max-width: 1200px; margin: 30px auto; padding: 20px; }
         
-        .login-layout { display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; align-items: flex-start; margin-top: 20px; }
-        .news-sidebar { flex: 1; min-width: 300px; max-width: 500px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: left; }
+        /* Side-by-side Layout */
+        .login-layout { display: flex; flex-direction: row; gap: 30px; justify-content: center; align-items: flex-start; margin-top: 20px; flex-wrap: wrap; }
+        .news-sidebar { flex: 1; min-width: 320px; max-width: 500px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: left; height: 320px; overflow-y: auto; }
         .news-sidebar h3 { color: #0066cc; border-bottom: 2px solid #e9ecef; padding-bottom: 8px; margin-top: 0; }
         
-        .auth-card { flex: 1; min-width: 300px; max-width: 400px; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
+        .auth-card { flex: 1; min-width: 300px; max-width: 400px; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; height: 240px; }
         .auth-btn { background: #db4437; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; width: 100%; margin-top: 10px; }
         .auth-btn:hover { background: #c23321; }
         .guest-btn { background: #6c757d; }
@@ -41,11 +42,11 @@
 
     <div class="container">
         <!-- Loading state -->
-        <div id="loadingView" style="margin-top: 50px; font-size: 18px; color: #666;">
+        <div id="loadingView" style="margin-top: 50px; font-size: 18px; color: #666; text-align: center;">
             Verifying session...
         </div>
 
-        <!-- Login Screen with Free Live News Sidebar -->
+        <!-- Login Screen with Free Live News Sidebar on the Left -->
         <div id="loginView" style="display: none;" class="login-layout">
             
             <!-- Left Sidebar: Live News Feed -->
@@ -137,23 +138,18 @@
         const headerLogoutBtn = document.getElementById("headerLogoutBtn");
         const welcomeMsg = document.getElementById("welcomeMsg");
 
-        // Reliable CORS-free public news fetcher
+        // Use a direct reliable JSON feed proxy to prevent browser fetch blocks
         async function fetchTrendingNews() {
             const newsContainer = document.getElementById("newsTicker");
             try {
-                const response = await fetch("https://api.allorigins.win/get?url=" + encodeURIComponent("https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en"));
+                const response = await fetch("https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/world/rss.xml");
                 const data = await response.json();
-                const parser = new DOMParser();
-                const xmlDoc = parser.parseFromString(data.contents, "text/xml");
-                const items = xmlDoc.querySelectorAll("item");
-
-                if (items.length > 0) {
-                    let newsHtml = "<ul style='padding-left: 20px; margin: 0;'>";
-                    for (let i = 0; i < Math.min(6, items.length); i++) {
-                        let title = items[i].querySelector("title").textContent;
-                        let link = items[i].querySelector("link").textContent;
-                        newsHtml += `<li style="margin-bottom: 12px;"><a href="${link}" target="_blank" style="color: #0066cc; text-decoration: none; font-weight: bold;">${title}</a></li>`;
-                    }
+                
+                if (data && data.items && data.items.length > 0) {
+                    let newsHtml = "<ul style='padding-left: 18px; margin: 0;'>";
+                    data.items.slice(0, 6).forEach(item => {
+                        newsHtml += `<li style="margin-bottom: 10px;"><a href="${item.link}" target="_blank" style="color: #0066cc; text-decoration: none; font-weight: bold; font-size: 13px;">${item.title}</a></li>`;
+                    });
                     newsHtml += "</ul>";
                     newsContainer.innerHTML = newsHtml;
                 } else {
@@ -161,7 +157,7 @@
                 }
             } catch (error) {
                 console.error("Error fetching news:", error);
-                newsContainer.innerHTML = "Unable to load live trending news at the moment.";
+                newsContainer.innerHTML = "Check back shortly for live global updates.";
             }
         }
 
