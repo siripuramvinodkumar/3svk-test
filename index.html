@@ -61,7 +61,7 @@
             
             <!-- Left Sidebar: Regional News Header at the Top -->
             <div class="news-sidebar">
-                <h3>🌐 Regional News</h3>
+                <h3>🌐 Regional News (Global Country Feeds)</h3>
                 <div class="sidebar-content-wrapper">
                     <div class="country-list-box" id="countryListContainer">
                         <!-- Populated dynamically -->
@@ -196,30 +196,48 @@
             fetchNewsForCountry(countryName, countryCode);
         }
 
-        // Fast CORS-free JSON News Fetcher via Google News RSS Bridge
         async function fetchNewsForCountry(countryName, countryCode) {
             const newsContainer = document.getElementById("newsTicker");
-            const rssUrl = `https://api.rss2json.com/v1/api.json?rss_url=` + encodeURIComponent(`https://news.google.com/rss/search?q=${countryName}&hl=en-US&gl=${countryCode}&ceid=${countryCode}:en`);
-
             newsContainer.innerHTML = "Loading live news...";
 
+            // Use direct GNews search with fallback API key to guarantee instant rendering
+            const API_KEY = "5887b7840464e8df06bb3cc6cb79bbd9";
+            const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(countryName)}&lang=en&max=5&apikey=${API_KEY}`;
+
             try {
-                const response = await fetch(rssUrl);
+                const response = await fetch(url);
                 const data = await response.json();
                 
-                if (data && data.items && data.items.length > 0) {
+                if (data && data.articles && data.articles.length > 0) {
                     let newsHtml = "<ul style='padding-left: 15px; margin: 0;'>";
-                    data.items.slice(0, 5).forEach(item => {
-                        newsHtml += `<li style="margin-bottom: 10px;"><a href="${item.link}" target="_blank" style="color: #0066cc; text-decoration: none; font-weight: bold; font-size: 11px;">${item.title}</a><br><span style="font-size: 10px; color: #888;">${new Date(item.pubDate).toLocaleTimeString()}</span></li>`;
+                    data.articles.forEach(article => {
+                        newsHtml += `<li style="margin-bottom: 10px;"><a href="${article.url}" target="_blank" style="color: #0066cc; text-decoration: none; font-weight: bold; font-size: 11px;">${article.title}</a><br><span style="font-size: 10px; color: #888;">${article.source.name}</span></li>`;
                     });
                     newsHtml += "</ul>";
                     newsContainer.innerHTML = newsHtml;
                 } else {
-                    newsContainer.innerHTML = "No recent headlines found for " + countryName + ".";
+                    newsContainer.innerHTML = `No recent headlines found for ${countryName}.`;
                 }
             } catch (error) {
-                console.error("Error fetching news:", error);
-                newsContainer.innerHTML = "Unable to load news right now.";
+                // Fallback to Public RSS bridge if direct GNews fetch is restricted by browser CORS
+                try {
+                    const rssUrl = `https://api.rss2json.com/v1/api.json?rss_url=` + encodeURIComponent(`https://news.google.com/rss/search?q=${countryName}&hl=en-US&gl=${countryCode}&ceid=${countryCode}:en`);
+                    const rssRes = await fetch(rssUrl);
+                    const rssData = await rssRes.json();
+                    
+                    if (rssData && rssData.items && rssData.items.length > 0) {
+                        let newsHtml = "<ul style='padding-left: 15px; margin: 0;'>";
+                        rssData.items.slice(0, 5).forEach(item => {
+                            newsHtml += `<li style="margin-bottom: 10px;"><a href="${item.link}" target="_blank" style="color: #0066cc; text-decoration: none; font-weight: bold; font-size: 11px;">${item.title}</a><br><span style="font-size: 10px; color: #888;">Google News</span></li>`;
+                        });
+                        newsHtml += "</ul>";
+                        newsContainer.innerHTML = newsHtml;
+                    } else {
+                        newsContainer.innerHTML = `Unable to load news for ${countryName}.`;
+                    }
+                } catch (err) {
+                    newsContainer.innerHTML = `Unable to load news right now.`;
+                }
             }
         }
 
