@@ -7,8 +7,8 @@
         body { font-family: Arial, sans-serif; margin: 0; background-color: #f8f9fa; color: #333; }
         header { background: #0066cc; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
         nav { display: flex; align-items: center; gap: 20px; }
-        nav a { color: white; text-decoration: none; font-weight: bold; }
-        nav a:hover { text-decoration: underline; }
+        nav a, nav button.logout-link { color: white; text-decoration: none; font-weight: bold; background: none; border: none; cursor: pointer; font-size: 16px; padding: 0; }
+        nav a:hover, nav button.logout-link:hover { text-decoration: underline; }
         .container { max-width: 1000px; margin: 40px auto; padding: 20px; text-align: center; }
         .btn-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 30px; }
         .btn { background: white; border: 2px solid #0066cc; color: #0066cc; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; text-decoration: none; transition: 0.3s; }
@@ -25,7 +25,8 @@
         <nav>
             <a href="index.html">Home</a>
             <a href="study.html">Study</a>
-            <span id="navAuthText" style="color: #ffeb3b; font-size: 14px;"></span>
+            <!-- Logout option in header (hidden when logged out, visible when logged in) -->
+            <button id="headerLogoutBtn" onclick="handleAuth()" class="logout-link" style="display: none;">Logout</button>
         </nav>
     </header>
 
@@ -41,6 +42,7 @@
         <!-- Step 2: Dashboard / Study Portal (Shown Second, Only After Sign In) -->
         <div id="portalView" style="display: none;">
             <h1>Welcome to 3SVK Study Portal</h1>
+            <p id="welcomeMsg" style="font-weight: bold; color: #0066cc;"></p>
             <p>Select your education level below to access curated YouTube video lessons:</p>
             
             <div class="btn-grid">
@@ -75,34 +77,32 @@
 
         const portalView = document.getElementById("portalView");
         const loginView = document.getElementById("loginView");
-        const navAuthText = document.getElementById("navAuthText");
+        const headerLogoutBtn = document.getElementById("headerLogoutBtn");
+        const welcomeMsg = document.getElementById("welcomeMsg");
 
-        // Handle the redirect token coming back from Google authentication
         getRedirectResult(auth).catch((error) => {
             console.error("Login Redirect Error: ", error.message);
         });
 
-        // Listen for active sessions and toggle views dynamically
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // User is logged in -> Hide login, show dashboard/portal
+                // Logged In: Hide login card, show portal and header logout option
                 loginView.style.display = "none";
                 portalView.style.display = "block";
-                navAuthText.innerText = user.displayName || user.email;
+                headerLogoutBtn.style.display = "inline-block";
+                welcomeMsg.innerText = "Logged in as: " + (user.displayName || user.email);
             } else {
-                // User is logged out -> Show login card, hide portal
+                // Logged Out: Show login card, hide portal and header logout option
                 loginView.style.display = "inline-block";
                 portalView.style.display = "none";
-                navAuthText.innerText = "";
+                headerLogoutBtn.style.display = "none";
+                welcomeMsg.innerText = "";
             }
         });
 
-        // Handler for clicking Sign In or Logout
         window.handleAuth = function() {
             if (auth.currentUser) {
-                signOut(auth).then(() => {
-                    // Automatically updates view via onAuthStateChanged
-                }).catch((error) => {
+                signOut(auth).catch((error) => {
                     console.error("Logout Error: ", error);
                 });
             } else {
