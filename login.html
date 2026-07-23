@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - 3SVK.tech</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f8f9fa; color: #333; }
+        header { background: #0066cc; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold; }
+        .login-container { max-width: 400px; margin: 60px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .btn { width: 100%; background: #0066cc; color: white; border: none; padding: 12px; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .btn:hover { background: #0052a3; }
+        .google-btn { background: #db4437; margin-top: 15px; }
+        .google-btn:hover { background: #c23321; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>3SVK.tech</h2>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="study.html">Study</a>
+            <a href="login.html">Login</a>
+        </nav>
+    </header>
+
+    <div class="login-container">
+        <h2>Sign In to 3SVK</h2>
+        
+        <!-- Standard Username/Password Form (Frontend Template) -->
+        <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="username">Username or Email</label>
+                <input type="text" id="username" required placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required placeholder="Enter your password">
+            </div>
+            <button type="submit" class="btn">Login</button>
+        </form>
+
+        <hr style="margin: 25px 0; border: 0; border-top: 1px solid #ddd;">
+
+        <!-- Google Login Option -->
+        <button onclick="loginWithGoogle()" class="btn google-btn">Sign in with Google</button>
+    </div>
+
+    <script>
+        function handleLogin(event) {
+            event.preventDefault();
+            const user = document.getElementById('username').value;
+            alert("Login submitted for: " + user + "\n(Note: Connect Firebase Authentication to process live database passwords!)");
+            window.location.href = "study.html";
+        }
+
+        function loginWithGoogle() {
+            // Placeholder for Firebase Google Auth trigger
+            alert("Redirecting to Google Sign-In...\n(Configure Firebase SDK to enable real Google authentication.)");
+            window.location.href = "study.html";
+        }
+    </script>
+
+</body>
+</html>
