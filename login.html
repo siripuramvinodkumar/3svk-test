@@ -6,6 +6,7 @@
 </head>
 <body>
     <h2>Sign in to 3SVK</h2>
+    <!-- Dynamic button that changes based on auth state -->
     <button id="authButton" onclick="handleAuth()">Sign in with Google</button>
     <p id="userInfo"></p>
 
@@ -30,31 +31,37 @@
         const authButton = document.getElementById("authButton");
         const userInfo = document.getElementById("userInfo");
 
-        // 1. Handle incoming redirect response from Google
-        getRedirectResult(auth)
-            .then((result) => {
-                if (result) {
-                    // Successfully authenticated via redirect, send to dashboard
-                    window.location.href = "study.html";
-                }
-            })
-            .catch((error) => {
-                console.error("Login Redirect Error: ", error.message);
-                alert("Login failed: " + error.message);
-            });
+        // Handle redirect result after Google returns user back
+        getRedirectResult(auth).catch((error) => {
+            console.error("Login Redirect Error: ", error.message);
+        });
 
-        // 2. Check if a session already exists; if so, redirect straight to dashboard
+        // Listen for user login/logout state changes live on the page
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // If they are visiting login.html directly while logged in, forward them to study.html
-                // (Remove or comment out the line below if you prefer letting them see a logout button on login.html instead)
-                window.location.href = "study.html";
+                // User is signed in -> Show Logout option and user info
+                authButton.innerText = "Logout";
+                userInfo.innerText = "Logged in as: " + (user.displayName || user.email);
+            } else {
+                // User is signed out -> Show Sign-in option
+                authButton.innerText = "Sign in with Google";
+                userInfo.innerText = "";
             }
         });
 
-        // 3. Trigger Google Sign-In redirect
+        // Unified button click handler for both Login and Logout
         window.handleAuth = function() {
-            signInWithRedirect(auth, provider);
+            if (auth.currentUser) {
+                // If logged in, perform logout
+                signOut(auth).then(() => {
+                    alert("Logged out successfully.");
+                }).catch((error) => {
+                    console.error("Logout Error: ", error);
+                });
+            } else {
+                // If logged out, start Google Sign-in redirect
+                signInWithRedirect(auth, provider);
+            }
         };
     </script>
 </body>
