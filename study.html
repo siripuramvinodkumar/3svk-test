@@ -6,7 +6,8 @@
     <style>
         body { font-family: Arial, sans-serif; margin: 0; background-color: #f8f9fa; color: #333; }
         header { background: #0066cc; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
-        nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold; }
+        nav { display: flex; align-items: center; gap: 20px; }
+        nav a { color: white; text-decoration: none; font-weight: bold; }
         nav a:hover { text-decoration: underline; }
         .container { max-width: 1000px; margin: 30px auto; padding: 20px; text-align: center; }
         .video-box { background: white; padding: 20px; margin-top: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -21,7 +22,7 @@
         <nav>
             <a href="index.html">Home</a>
             <a href="study.html">Study</a>
-            <a href="login.html">Login</a>
+            <a href="#" onclick="handleLogout(event)">Logout</a>
         </nav>
     </header>
 
@@ -40,8 +41,41 @@
         </div>
     </div>
 
-    <script>
-        // Automatically detect which level button was clicked from index.html
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBbTBZlAA9sprHmHYIrOL9Ct1yBU8_gVOU",
+            authDomain: "svk-auth.firebaseapp.com",
+            projectId: "svk-auth",
+            storageBucket: "svk-auth.firebasestorage.app",
+            messagingSenderId: "178863251618",
+            appId: "1:178863251618:web:21f1f549a2f11f76d1f7fb",
+            measurementId: "G-C5E85C5C09"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Security check: If user is not logged in, boot them back to index.html login page
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "index.html";
+            }
+        });
+
+        // Global logout function for the study navigation bar
+        window.handleLogout = function(event) {
+            event.preventDefault();
+            signOut(auth).then(() => {
+                window.location.href = "index.html";
+            }).catch((error) => {
+                console.error("Logout Error: ", error);
+            });
+        };
+
+        // Dynamic category heading handler
         const urlParams = new URLSearchParams(window.location.search);
         const level = urlParams.get('level');
 
