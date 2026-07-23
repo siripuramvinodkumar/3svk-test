@@ -30,15 +30,15 @@
     </header>
 
     <div class="container">
-        <!-- Step 1: Login Screen (Shown First) -->
-        <div id="loginView" class="auth-card">
+        <!-- Step 1: Login Screen (Shown First by Default) -->
+        <div id="loginView" class="auth-card" style="display: none;">
             <h2>Sign in to 3SVK</h2>
             <p>Access educational resources by signing in with your Google account.</p>
             <br>
             <button id="authButton" onclick="handleAuth()" class="auth-btn">Sign in with Google</button>
         </div>
 
-        <!-- Step 2: Dashboard / Study Portal (Shown Second, After Sign In) -->
+        <!-- Step 2: Dashboard / Study Portal (Shown Second, Only After Sign In) -->
         <div id="portalView" style="display: none;">
             <h1>Welcome to 3SVK Study Portal</h1>
             <p>Select your education level below to access curated YouTube video lessons:</p>
@@ -77,25 +77,32 @@
         const loginView = document.getElementById("loginView");
         const navAuthText = document.getElementById("navAuthText");
 
+        // Handle the redirect token coming back from Google authentication
         getRedirectResult(auth).catch((error) => {
             console.error("Login Redirect Error: ", error.message);
         });
 
+        // Listen for active sessions and toggle views dynamically
         onAuthStateChanged(auth, (user) => {
             if (user) {
+                // User is logged in -> Hide login, show dashboard/portal
                 loginView.style.display = "none";
                 portalView.style.display = "block";
                 navAuthText.innerText = user.displayName || user.email;
             } else {
+                // User is logged out -> Show login card, hide portal
                 loginView.style.display = "inline-block";
                 portalView.style.display = "none";
                 navAuthText.innerText = "";
             }
         });
 
+        // Handler for clicking Sign In or Logout
         window.handleAuth = function() {
             if (auth.currentUser) {
-                signOut(auth).catch((error) => {
+                signOut(auth).then(() => {
+                    // Automatically updates view via onAuthStateChanged
+                }).catch((error) => {
                     console.error("Logout Error: ", error);
                 });
             } else {
