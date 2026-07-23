@@ -41,7 +41,7 @@
     <script>
         async function fetchTrendingNews() {
             const container = document.getElementById("newsContainer");
-            const API_KEY = "5887b7840464e8df06bb3cc6cb79bbd9";
+            const API_KEY = "f49d968a27d10cd6903220dbcdbe070e";
             const targetUrl = `https://gnews.io/api/v4/top-headlines?category=general&lang=en&max=10&apikey=${API_KEY}`;
             const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
 
