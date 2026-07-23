@@ -1,14 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>3SVK Test Page</title>
+    <meta charset="UTF-8">
+    <title>3SVK.tech - Education Platform</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background-color: #f4f4f9; color: #333; }
-        h1 { color: #0066cc; }
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f8f9fa; color: #333; }
+        header { background: #0066cc; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold; }
+        nav a:hover { text-decoration: underline; }
+        .container { max-width: 1000px; margin: 40px auto; padding: 20px; text-align: center; }
+        .btn-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 30px; }
+        .btn { background: white; border: 2px solid #0066cc; color: #0066cc; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; text-decoration: none; transition: 0.3s; }
+        .btn:hover { background: #0066cc; color: white; }
     </style>
 </head>
 <body>
-    <h1>Welcome to 3SVK.tech!</h1>
-    <p>The domain is successfully hosted and connected via GitHub Pages.</p>
+
+    <header>
+        <h2>3SVK.tech</h2>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="study.html">Study</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Welcome to 3SVK Study Portal</h1>
+        <p>Select your education level below to access curated YouTube video lessons:</p>
+        
+        <div class="btn-grid">
+            <a href="study.html?level=kg" class="btn">KG & Primary</a>
+            <a href="study.html?level=highschool" class="btn">High School (6-10)</a>
+            <a href="study.html?level=intermediate" class="btn">Intermediate / 10+2</a>
+            <a href="study.html?level=ug" class="btn">Undergraduate (UG / B.Tech)</a>
+            <a href="study.html?level=pg" class="btn">Postgraduate (PG)</a>
+        </div>
+    </div>
+
 </body>
 </html>
