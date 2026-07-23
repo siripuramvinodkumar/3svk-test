@@ -14,7 +14,6 @@
         .auth-btn { background: #db4437; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
         .auth-btn:hover { background: #c23321; }
         
-        /* Professional Study Link Grid */
         .category-section { margin-top: 30px; text-align: left; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .category-section h3 { color: #0066cc; border-bottom: 2px solid #e9ecef; padding-bottom: 8px; margin-top: 0; }
         .link-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 15px; }
@@ -29,20 +28,25 @@
         <nav>
             <a href="index.html">Home</a>
             <a href="study.html">Study Hub</a>
-            <button id="headerLogoutBtn" onclick="handleAuth()" class="logout-link" style="display: none;">Logout</button>
+            <button id="headerLogoutBtn" onclick="handleLogout()" class="logout-link" style="display: none;">Logout</button>
         </nav>
     </header>
 
     <div class="container">
-        <!-- Step 1: Login Screen (Shown First) -->
-        <div id="loginView" class="auth-card" style="display: none;">
-            <h2>Sign in to 3SVK</h2>
-            <p>Access professional study materials and curated modules by signing in with Google.</p>
-            <br>
-            <button id="authButton" onclick="handleAuth()" class="auth-btn">Sign in with Google</button>
+        <!-- Loading state to prevent flashing login screen on return -->
+        <div id="loadingView" style="margin-top: 50px; font-size: 18px; color: #666;">
+            Verifying session...
         </div>
 
-        <!-- Step 2: Professional Dashboard & Study Links Portal (Shown After Login) -->
+        <!-- Login Screen -->
+        <div id="loginView" class="auth-card" style="display: none;">
+            <h2>Sign in to 3SVK</h2>
+            <p>Access professional study materials by signing in with Google.</p>
+            <br>
+            <button onclick="handleLogin()" class="auth-btn">Sign in with Google</button>
+        </div>
+
+        <!-- Dashboard Portal -->
         <div id="portalView" style="display: none; text-align: left;">
             <div style="text-align: center; margin-bottom: 30px;">
                 <h1>Welcome to 3SVK Professional Study Portal</h1>
@@ -50,7 +54,6 @@
                 <p>Select your professional academic track below:</p>
             </div>
 
-            <!-- KG & School Education -->
             <div class="category-section">
                 <h3>School Education (KG - Grade 10)</h3>
                 <div class="link-grid">
@@ -59,7 +62,6 @@
                 </div>
             </div>
 
-            <!-- Intermediate / 10+2 -->
             <div class="category-section">
                 <h3>Intermediate & 10+2</h3>
                 <div class="link-grid">
@@ -68,7 +70,6 @@
                 </div>
             </div>
 
-            <!-- Undergraduate / B.Tech -->
             <div class="category-section">
                 <h3>Undergraduate & Engineering (B.Tech)</h3>
                 <div class="link-grid">
@@ -78,7 +79,6 @@
                 </div>
             </div>
 
-            <!-- Postgraduate & Research -->
             <div class="category-section">
                 <h3>Postgraduate & Advanced Research</h3>
                 <div class="link-grid">
@@ -88,14 +88,14 @@
             </div>
 
             <div style="text-align: center; margin-top: 40px;">
-                <button onclick="handleAuth()" class="auth-btn" style="background: #333;">Logout of Session</button>
+                <button onclick="handleLogout()" class="auth-btn" style="background: #333;">Logout of Session</button>
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, signOut, setPersistence, browserLocalPersistence, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBbTBZlAA9sprHmHYIrOL9Ct1yBU8_gVOU",
@@ -111,46 +111,43 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
+        const loadingView = document.getElementById("loadingView");
         const portalView = document.getElementById("portalView");
         const loginView = document.getElementById("loginView");
         const headerLogoutBtn = document.getElementById("headerLogoutBtn");
         const welcomeMsg = document.getElementById("welcomeMsg");
 
-        getRedirectResult(auth)
-            .then((result) => {
-                if (result && result.user) {
-                    loginView.style.display = "none";
-                    portalView.style.display = "block";
-                    headerLogoutBtn.style.display = "inline-block";
-                    welcomeMsg.innerText = "Authenticated as: " + (result.user.displayName || result.user.email);
-                }
-            })
-            .catch((error) => {
-                console.error("Login Redirect Error: ", error.message);
-            });
+        // Force local storage persistence so session stays saved across reloads
+        setPersistence(auth, browserLocalPersistence).then(() => {
+            return getRedirectResult(auth);
+        }).catch((error) => {
+            console.error("Redirect/Persistence Error: ", error);
+        });
 
+        // Monitor persistent user state changes safely
         onAuthStateChanged(auth, (user) => {
+            loadingView.style.display = "none"; // Hide loading spinner
             if (user) {
                 loginView.style.display = "none";
                 portalView.style.display = "block";
                 headerLogoutBtn.style.display = "inline-block";
                 welcomeMsg.innerText = "Authenticated as: " + (user.displayName || user.email);
             } else {
-                loginView.style.display = "inline-block";
                 portalView.style.display = "none";
+                loginView.style.display = "inline-block";
                 headerLogoutBtn.style.display = "none";
                 welcomeMsg.innerText = "";
             }
         });
 
-        window.handleAuth = function() {
-            if (auth.currentUser) {
-                signOut(auth).catch((error) => {
-                    console.error("Logout Error: ", error);
-                });
-            } else {
-                signInWithRedirect(auth, provider);
-            }
+        window.handleLogin = function() {
+            signInWithRedirect(auth, provider);
+        };
+
+        window.handleLogout = function() {
+            signOut(auth).catch((error) => {
+                console.error("Logout Error: ", error);
+            });
         };
     </script>
 </body>
