@@ -10,7 +10,7 @@
         nav a, nav button.logout-link { color: white; text-decoration: none; font-weight: bold; background: none; border: none; cursor: pointer; font-size: 16px; padding: 0; }
         nav a:hover, nav button.logout-link:hover { text-decoration: underline; }
         .container { max-width: 1000px; margin: 40px auto; padding: 20px; text-align: center; }
-        .auth-card { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: inline-block; margin-top: 50px; }
+        .auth-card { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: inline-block; margin-top: 30px; width: 100%; max-width: 500px; box-sizing: border-box; }
         .auth-btn { background: #db4437; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; width: 100%; margin-top: 10px; }
         .auth-btn:hover { background: #c23321; }
         .guest-btn { background: #6c757d; }
@@ -40,29 +40,32 @@
             Verifying session...
         </div>
 
-        <!-- Login Screen with Google and Anonymous Options -->
-        <div id="loginView" class="auth-card" style="display: none;">
-            <h2>Sign in to 3SVK</h2>
-            <p>Access professional study materials via Google or browse instantly as a guest.</p>
-            <br>
-            <button onclick="handleGoogleLogin()" class="auth-btn">Sign in with Google</button>
-            <button onclick="handleAnonymousLogin()" class="auth-btn guest-btn">Continue as Guest (Anonymous)</button>
+        <!-- Login Screen & Public Home Screen (Shows News + Login Options Directly) -->
+        <div id="loginView" style="display: none;">
+            
+            <!-- Live Worldwide Trending News Visible on Home Page Without Login -->
+            <div class="category-section" style="max-width: 600px; margin: 0 auto 30px auto;">
+                <h3>🌐 Live Worldwide Trending News</h3>
+                <div id="newsTicker" style="font-size: 14px; color: #555; padding: 10px 0;">
+                    Loading live headlines...
+                </div>
+            </div>
+
+            <div class="auth-card">
+                <h2>Sign in to 3SVK</h2>
+                <p>Access professional study materials via Google or browse instantly as a guest.</p>
+                <br>
+                <button onclick="handleGoogleLogin()" class="auth-btn">Sign in with Google</button>
+                <button onclick="handleAnonymousLogin()" class="auth-btn guest-btn">Continue as Guest (Anonymous)</button>
+            </div>
         </div>
 
-        <!-- Dashboard Portal -->
+        <!-- Dashboard Portal (Unlocked After Login/Guest Click) -->
         <div id="portalView" style="display: none; text-align: left;">
             <div style="text-align: center; margin-bottom: 30px;">
                 <h1>Welcome to 3SVK Professional Study Portal</h1>
                 <p id="welcomeMsg" style="font-weight: bold; color: #0066cc;"></p>
                 <p>Select your professional academic track below:</p>
-            </div>
-
-            <!-- Live Worldwide Trending News Module -->
-            <div class="category-section">
-                <h3>🌐 Live Worldwide Trending News</h3>
-                <div id="newsTicker" style="font-size: 14px; color: #555; padding: 10px 0;">
-                    Loading live headlines...
-                </div>
             </div>
 
             <div class="category-section">
@@ -154,6 +157,9 @@
             }
         }
 
+        // Fetch news immediately when the home page loads (no login needed)
+        fetchTrendingNews();
+
         setPersistence(auth, browserLocalPersistence).then(() => {
             return getRedirectResult(auth);
         }).catch((error) => {
@@ -172,12 +178,9 @@
                 } else {
                     welcomeMsg.innerText = "Authenticated as: " + (user.displayName || user.email);
                 }
-
-                // Trigger live news ticker load upon successful session validation
-                fetchTrendingNews();
             } else {
                 portalView.style.display = "none";
-                loginView.style.display = "inline-block";
+                loginView.style.display = "block";
                 headerLogoutBtn.style.display = "none";
                 welcomeMsg.innerText = "";
             }
