@@ -2,38 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>3SVK.tech - Professional Education Platform</title>
+    <title>3SVK.tech - World Trending News</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; background-color: #f8f9fa; color: #333; }
         header { background: #0066cc; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         nav { display: flex; align-items: center; gap: 20px; }
-        nav a, nav button.logout-link { color: white; text-decoration: none; font-weight: bold; background: none; border: none; cursor: pointer; font-size: 16px; padding: 0; }
-        nav a:hover, nav button.logout-link:hover { text-decoration: underline; }
-        .container { max-width: 1200px; margin: 30px auto; padding: 20px; }
-        
-        /* Side-by-side Layout */
-        .login-layout { display: flex; flex-direction: row; gap: 30px; justify-content: center; align-items: flex-start; margin-top: 20px; flex-wrap: wrap; }
-        
-        /* Left Sidebar Layout */
-        .news-sidebar { flex: 1; min-width: 380px; max-width: 600px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: left; box-sizing: border-box; }
-        .news-sidebar h3 { color: #0066cc; border-bottom: 2px solid #e9ecef; padding-bottom: 8px; margin-top: 0; margin-bottom: 15px; font-size: 16px; }
-        
-        .sidebar-content-wrapper { display: flex; gap: 15px; height: 260px; }
-        .country-list-box { width: 100%; height: 100%; overflow-y: auto; padding-right: 8px; }
-        .country-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; cursor: pointer; border-radius: 4px; font-size: 13px; font-weight: bold; color: #0066cc; text-decoration: none; transition: 0.2s; border-bottom: 1px solid #f1f3f5; }
-        .country-item:hover { background: #0066cc; color: white; }
-        
-        .auth-card { flex: 1; min-width: 300px; max-width: 380px; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; box-sizing: border-box; }
-        .auth-btn { background: #db4437; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; width: 100%; margin-top: 10px; }
-        .auth-btn:hover { background: #c23321; }
-        .guest-btn { background: #6c757d; }
-        .guest-btn:hover { background: #5a6268; }
-        
-        .category-section { margin-top: 30px; text-align: left; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .category-section h3 { color: #0066cc; border-bottom: 2px solid #e9ecef; padding-bottom: 8px; margin-top: 0; }
-        .link-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 15px; }
-        .study-link { background: #f1f3f5; border: 1px solid #ced4da; color: #0066cc; padding: 12px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px; text-align: center; transition: 0.2s; display: block; }
-        .study-link:hover { background: #0066cc; color: white; border-color: #0066cc; }
+        nav a { color: white; text-decoration: none; font-weight: bold; }
+        nav a:hover { text-decoration: underline; }
+        .container { max-width: 900px; margin: 40px auto; padding: 25px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { color: #0066cc; border-bottom: 2px solid #e9ecef; padding-bottom: 10px; margin-top: 0; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: #0066cc; text-decoration: none; font-weight: bold; }
+        .back-link:hover { text-decoration: underline; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 15px; }
+        li a { color: #0066cc; text-decoration: none; font-weight: bold; font-size: 16px; }
+        li a:hover { text-decoration: underline; }
+        .news-source { font-size: 12px; color: #666; display: block; margin-top: 3px; }
     </style>
 </head>
 <body>
@@ -41,158 +25,48 @@
     <header>
         <h2>3SVK.tech</h2>
         <nav>
-            <a href="index.html">Home</a>
-            <a href="study.html">Study Hub</a>
-            <button id="headerLogoutBtn" onclick="handleLogout()" class="logout-link" style="display: none;">Logout</button>
+            <a href="../index.html">Home</a>
+            <a href="../study.html">Study Hub</a>
         </nav>
     </header>
 
     <div class="container">
-        <!-- Loading state -->
-        <div id="loadingView" style="margin-top: 50px; font-size: 18px; color: #666; text-align: center;">
-            Verifying session...
-        </div>
-
-        <!-- Login Screen with World News Folder Links -->
-        <div id="loginView" style="display: none;" class="login-layout">
-            
-            <!-- Left Sidebar: Links directly to world-news folder files -->
-            <div class="news-sidebar">
-                <h3>🌐 World News Directory</h3>
-                <div class="sidebar-content-wrapper">
-                    <div class="country-list-box">
-                        <a href="world-news/india.html" class="country-item"><span>🇮🇳</span> <span>India News Portal</span></a>
-                        <a href="world-news/usa.html" class="country-item"><span>🇺🇸</span> <span>United States News Portal</span></a>
-                        <a href="world-news/uk.html" class="country-item"><span>🇬🇧</span> <span>United Kingdom News Portal</span></a>
-                        <a href="world-news/canada.html" class="country-item"><span>🇨🇦</span> <span>Canada News Portal</span></a>
-                        <a href="world-news/australia.html" class="country-item"><span>🇦🇺</span> <span>Australia News Portal</span></a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Side: Login & Guest Options -->
-            <div class="auth-card">
-                <h2>Sign in to 3SVK</h2>
-                <p>Access professional study materials via Google or browse instantly as a guest.</p>
-                <br>
-                <button onclick="handleGoogleLogin()" class="auth-btn">Sign in with Google</button>
-                <button onclick="handleAnonymousLogin()" class="auth-btn guest-btn">Continue as Guest (Anonymous)</button>
-            </div>
-        </div>
-
-        <!-- Dashboard Portal -->
-        <div id="portalView" style="display: none; text-align: left;">
-            <div style="text-align: center; margin-bottom: 30px;">
-                <h1>Welcome to 3SVK Professional Study Portal</h1>
-                <p id="welcomeMsg" style="font-weight: bold; color: #0066cc;"></p>
-                <p>Select your professional academic track below:</p>
-            </div>
-
-            <div class="category-section">
-                <h3>School Education (KG - Grade 10)</h3>
-                <div class="link-grid">
-                    <a href="study.html?level=kg" class="study-link">KG & Primary Foundations</a>
-                    <a href="study.html?level=highschool" class="study-link">High School STEM (6-10)</a>
-                </div>
-            </div>
-
-            <div class="category-section">
-                <h3>Intermediate & 10+2</h3>
-                <div class="link-grid">
-                    <a href="study.html?level=intermediate-mpc" class="study-link">Mathematics, Physics, Chemistry</a>
-                    <a href="study.html?level=intermediate-bpc" class="study-link">Biology & Core Sciences</a>
-                </div>
-            </div>
-
-            <div class="category-section">
-                <h3>Undergraduate & Engineering (B.Tech)</h3>
-                <div class="link-grid">
-                    <a href="study.html?level=ug-cse" class="study-link">Computer Science & Cyber Security</a>
-                    <a href="study.html?level=ug-mech" class="study-link">Mechanical Engineering</a>
-                    <a href="study.html?level=ug-ece" class="study-link">Electronics & Communications</a>
-                </div>
-            </div>
-
-            <div class="category-section">
-                <h3>Postgraduate & Advanced Research</h3>
-                <div class="link-grid">
-                    <a href="study.html?level=pg-ai" class="study-link">Artificial Intelligence & Data Science</a>
-                    <a href="study.html?level=pg-research" class="study-link">Technical Research & Papers</a>
-                </div>
-            </div>
-
-            <div style="text-align: center; margin-top: 40px;">
-                <button onclick="handleLogout()" class="auth-btn" style="background: #333; width: auto;">Logout of Session</button>
-            </div>
+        <a href="../index.html" class="back-link">&larr; Back to Home Directory</a>
+        <h2>🌐 World Trending News</h2>
+        <div id="newsContainer" style="font-size: 15px; color: #555;">
+            Fetching real-time global trending headlines...
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, signInAnonymously, signOut, setPersistence, browserLocalPersistence, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    <script>
+        async function fetchTrendingNews() {
+            const container = document.getElementById("newsContainer");
+            const API_KEY = "5887b7840464e8df06bb3cc6cb79bbd9";
+            const url = `https://gnews.io/api/v4/top-headlines?category=general&lang=en&max=10&apikey=${API_KEY}`;
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBbTBZlAA9sprHmHYIrOL9Ct1yBU8_gVOU",
-            authDomain: "svk-auth.firebaseapp.com",
-            projectId: "svk-auth",
-            storageBucket: "svk-auth.firebasestorage.app",
-            messagingSenderId: "178863251618",
-            appId: "1:178863251618:web:21f1f549a2f11f76d1f7fb",
-            measurementId: "G-C5E85C5C09"
-        };
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
-
-        const loadingView = document.getElementById("loadingView");
-        const portalView = document.getElementById("portalView");
-        const loginView = document.getElementById("loginView");
-        const headerLogoutBtn = document.getElementById("headerLogoutBtn");
-        const welcomeMsg = document.getElementById("welcomeMsg");
-
-        setPersistence(auth, browserLocalPersistence).then(() => {
-            return getRedirectResult(auth);
-        }).catch((error) => {
-            console.error("Persistence Error: ", error);
-        });
-
-        onAuthStateChanged(auth, (user) => {
-            loadingView.style.display = "none";
-            if (user) {
-                loginView.style.display = "none";
-                portalView.style.display = "block";
-                headerLogoutBtn.style.display = "inline-block";
-                
-                if (user.isAnonymous) {
-                    welcomeMsg.innerText = "Browsing as: Guest User (Anonymous)";
+                if (data && data.articles && data.articles.length > 0) {
+                    let html = "<ul>";
+                    data.articles.forEach(article => {
+                        html += `<li>
+                                    <a href="${article.url}" target="_blank">${article.title}</a>
+                                    <span class="news-source">Source: ${article.source.name} &bull; ${new Date(article.publishedAt).toLocaleString()}</span>
+                                 </li>`;
+                    });
+                    html += "</ul>";
+                    container.innerHTML = html;
                 } else {
-                    welcomeMsg.innerText = "Authenticated as: " + (user.displayName || user.email);
+                    container.innerHTML = `<p>No trending headlines available at the moment.</p>`;
                 }
-            } else {
-                portalView.style.display = "none";
-                loginView.style.display = "flex";
-                headerLogoutBtn.style.display = "none";
-                welcomeMsg.innerText = "";
+            } catch (error) {
+                container.innerHTML = `<p>Unable to connect to GNews API right now.</p>`;
             }
-        });
+        }
 
-        window.handleGoogleLogin = function() {
-            signInWithRedirect(auth, provider);
-        };
-
-        window.handleAnonymousLogin = function() {
-            signInAnonymously(auth).catch((error) => {
-                console.error("Anonymous Sign-In Error: ", error);
-                alert("Guest login failed: " + error.message);
-            });
-        };
-
-        window.handleLogout = function() {
-            signOut(auth).catch((error) => {
-                console.error("Logout Error: ", error);
-            });
-        };
+        fetchTrendingNews();
     </script>
 </body>
 </html>
