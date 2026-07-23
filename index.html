@@ -19,12 +19,9 @@
         .news-sidebar h3 { color: #0066cc; border-bottom: 2px solid #e9ecef; padding-bottom: 8px; margin-top: 0; margin-bottom: 15px; font-size: 16px; }
         
         .sidebar-content-wrapper { display: flex; gap: 15px; height: 260px; }
-        .country-list-box { width: 170px; height: 100%; overflow-y: auto; border-right: 1px solid #e9ecef; padding-right: 8px; }
-        .country-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; cursor: pointer; border-radius: 4px; font-size: 12px; font-weight: bold; color: #495057; transition: 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .country-item:hover, .country-item.active { background: #0066cc; color: white; }
-        
-        .news-feed-box { flex: 1; height: 100%; overflow-y: auto; padding-left: 5px; }
-        .news-feed-box h4 { color: #0066cc; margin: 0 0 8px 0; font-size: 13px; border-bottom: 1px dashed #e9ecef; padding-bottom: 4px; }
+        .country-list-box { width: 100%; height: 100%; overflow-y: auto; padding-right: 8px; }
+        .country-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; cursor: pointer; border-radius: 4px; font-size: 13px; font-weight: bold; color: #0066cc; text-decoration: none; transition: 0.2s; border-bottom: 1px solid #f1f3f5; }
+        .country-item:hover { background: #0066cc; color: white; }
         
         .auth-card { flex: 1; min-width: 300px; max-width: 380px; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; box-sizing: border-box; }
         .auth-btn { background: #db4437; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; width: 100%; margin-top: 10px; }
@@ -56,21 +53,19 @@
             Verifying session...
         </div>
 
-        <!-- Login Screen with Regional News Header Placed Above Options -->
+        <!-- Login Screen with World News Folder Links -->
         <div id="loginView" style="display: none;" class="login-layout">
             
-            <!-- Left Sidebar: Regional News Header at the Top -->
+            <!-- Left Sidebar: Links directly to world-news folder files -->
             <div class="news-sidebar">
-                <h3>🌐 Regional News (Global Country Feeds)</h3>
+                <h3>🌐 World News Directory</h3>
                 <div class="sidebar-content-wrapper">
-                    <div class="country-list-box" id="countryListContainer">
-                        <!-- Populated dynamically -->
-                    </div>
-                    <div class="news-feed-box">
-                        <h4 id="newsFeedTitle">🇮🇳 India News</h4>
-                        <div id="newsTicker" style="font-size: 12px; color: #555; padding-top: 2px;">
-                            Loading live news...
-                        </div>
+                    <div class="country-list-box">
+                        <a href="world-news/india.html" class="country-item"><span>🇮🇳</span> <span>India News Portal</span></a>
+                        <a href="world-news/usa.html" class="country-item"><span>🇺🇸</span> <span>United States News Portal</span></a>
+                        <a href="world-news/uk.html" class="country-item"><span>🇬🇧</span> <span>United Kingdom News Portal</span></a>
+                        <a href="world-news/canada.html" class="country-item"><span>🇨🇦</span> <span>Canada News Portal</span></a>
+                        <a href="world-news/australia.html" class="country-item"><span>🇦🇺</span> <span>Australia News Portal</span></a>
                     </div>
                 </div>
             </div>
@@ -155,94 +150,6 @@
         const loginView = document.getElementById("loginView");
         const headerLogoutBtn = document.getElementById("headerLogoutBtn");
         const welcomeMsg = document.getElementById("welcomeMsg");
-
-        const countries = [
-            { name: "India", flag: "🇮🇳", code: "IN" }, { name: "United States", flag: "🇺🇸", code: "US" }, { name: "United Kingdom", flag: "🇬🇧", code: "GB" },
-            { name: "Canada", flag: "🇨🇦", code: "CA" }, { name: "Australia", flag: "🇦🇺", code: "AU" }, { name: "Afghanistan", flag: "🇦🇫", code: "AF" },
-            { name: "Albania", flag: "🇦🇱", code: "AL" }, { name: "Algeria", flag: "🇩🇿", code: "DZ" }, { name: "Argentina", flag: "🇦🇷", code: "AR" },
-            { name: "Armenia", flag: "🇦🇲", code: "AM" }, { name: "Austria", flag: "🇦🇹", code: "AT" }, { name: "Bangladesh", flag: "🇧🇩", code: "BD" },
-            { name: "Belgium", flag: "🇧🇪", code: "BE" }, { name: "Brazil", flag: "🇧🇷", code: "BR" }, { name: "China", flag: "🇨🇳", code: "CN" },
-            { name: "Colombia", flag: "🇨🇴", code: "CO" }, { name: "Denmark", flag: "🇩🇰", code: "DK" }, { name: "Egypt", flag: "🇪🇬", code: "EG" },
-            { name: "France", flag: "🇫🇷", code: "FR" }, { name: "Germany", flag: "🇩🇪", code: "DE" }, { name: "Greece", flag: "🇬🇷", code: "GR" },
-            { name: "Indonesia", flag: "🇮🇩", code: "ID" }, { name: "Iran", flag: "🇮🇷", code: "IR" }, { name: "Iraq", flag: "🇮🇶", code: "IQ" },
-            { name: "Ireland", flag: "🇮🇪", code: "IE" }, { name: "Israel", flag: "🇮🇱", code: "IL" }, { name: "Italy", flag: "🇮🇹", code: "IT" },
-            { name: "Japan", flag: "🇯🇵", code: "JP" }, { name: "Kenya", flag: "🇰🇪", code: "KE" }, { name: "Malaysia", flag: "🇲🇾", code: "MY" },
-            { name: "Mexico", flag: "🇲🇽", code: "MX" }, { name: "Nepal", flag: "🇳🇵", code: "NP" }, { name: "Netherlands", flag: "🇳🇱", code: "NL" },
-            { name: "New Zealand", flag: "🇳🇿", code: "NZ" }, { name: "Nigeria", flag: "🇳🇬", code: "NG" }, { name: "Pakistan", flag: "🇵🇰", code: "PK" },
-            { name: "Philippines", flag: "🇵🇭", code: "PH" }, { name: "Poland", flag: "🇵🇱", code: "PL" }, { name: "Portugal", flag: "🇵🇹", code: "PT" },
-            { name: "Russia", flag: "🇷🇺", code: "RU" }, { name: "Saudi Arabia", flag: "🇸🇦", code: "SA" }, { name: "Singapore", flag: "🇸🇬", code: "SG" },
-            { name: "South Africa", flag: "🇿🇦", code: "ZA" }, { name: "South Korea", flag: "🇰🇷", code: "KR" }, { name: "Spain", flag: "🇪🇸", code: "ES" },
-            { name: "Sri Lanka", flag: "🇱🇰", code: "LK" }, { name: "Sweden", flag: "🇸🇪", code: "SE" }, { name: "Switzerland", flag: "🇨🇭", code: "CH" },
-            { name: "Taiwan", flag: "🇹🇼", code: "TW" }, { name: "Thailand", flag: "🇹🇭", code: "TH" }, { name: "Turkey", flag: "🇹🇷", code: "TR" },
-            { name: "Ukraine", flag: "🇺🇦", code: "UA" }, { name: "UAE", flag: "🇦🇪", code: "AE" }, { name: "Vietnam", flag: "🇻🇳", code: "VN" }
-        ];
-
-        function renderCountryList() {
-            const container = document.getElementById("countryListContainer");
-            let html = "";
-            countries.forEach((c, index) => {
-                const activeClass = index === 0 ? "active" : "";
-                html += `<div class="country-item ${activeClass}" onclick="selectCountry('${c.name}', '${c.code}', '${c.flag} ${c.name}', this)">
-                            <span>${c.flag}</span> <span>${c.name}</span>
-                         </div>`;
-            });
-            container.innerHTML = html;
-        }
-
-        window.selectCountry = function(countryName, countryCode, displayName, element) {
-            document.querySelectorAll(".country-item").forEach(el => el.classList.remove("active"));
-            element.classList.add("active");
-            document.getElementById("newsFeedTitle").innerText = displayName + " News";
-            fetchNewsForCountry(countryName, countryCode);
-        }
-
-        async function fetchNewsForCountry(countryName, countryCode) {
-            const newsContainer = document.getElementById("newsTicker");
-            newsContainer.innerHTML = "Loading live news...";
-
-            // Use direct GNews search with fallback API key to guarantee instant rendering
-            const API_KEY = "5887b7840464e8df06bb3cc6cb79bbd9";
-            const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(countryName)}&lang=en&max=5&apikey=${API_KEY}`;
-
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                if (data && data.articles && data.articles.length > 0) {
-                    let newsHtml = "<ul style='padding-left: 15px; margin: 0;'>";
-                    data.articles.forEach(article => {
-                        newsHtml += `<li style="margin-bottom: 10px;"><a href="${article.url}" target="_blank" style="color: #0066cc; text-decoration: none; font-weight: bold; font-size: 11px;">${article.title}</a><br><span style="font-size: 10px; color: #888;">${article.source.name}</span></li>`;
-                    });
-                    newsHtml += "</ul>";
-                    newsContainer.innerHTML = newsHtml;
-                } else {
-                    newsContainer.innerHTML = `No recent headlines found for ${countryName}.`;
-                }
-            } catch (error) {
-                // Fallback to Public RSS bridge if direct GNews fetch is restricted by browser CORS
-                try {
-                    const rssUrl = `https://api.rss2json.com/v1/api.json?rss_url=` + encodeURIComponent(`https://news.google.com/rss/search?q=${countryName}&hl=en-US&gl=${countryCode}&ceid=${countryCode}:en`);
-                    const rssRes = await fetch(rssUrl);
-                    const rssData = await rssRes.json();
-                    
-                    if (rssData && rssData.items && rssData.items.length > 0) {
-                        let newsHtml = "<ul style='padding-left: 15px; margin: 0;'>";
-                        rssData.items.slice(0, 5).forEach(item => {
-                            newsHtml += `<li style="margin-bottom: 10px;"><a href="${item.link}" target="_blank" style="color: #0066cc; text-decoration: none; font-weight: bold; font-size: 11px;">${item.title}</a><br><span style="font-size: 10px; color: #888;">Google News</span></li>`;
-                        });
-                        newsHtml += "</ul>";
-                        newsContainer.innerHTML = newsHtml;
-                    } else {
-                        newsContainer.innerHTML = `Unable to load news for ${countryName}.`;
-                    }
-                } catch (err) {
-                    newsContainer.innerHTML = `Unable to load news right now.`;
-                }
-            }
-        }
-
-        renderCountryList();
-        fetchNewsForCountry("India", "IN");
 
         setPersistence(auth, browserLocalPersistence).then(() => {
             return getRedirectResult(auth);
