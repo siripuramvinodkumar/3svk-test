@@ -10,9 +10,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // Your correct project config keys for svk-auth
         const firebaseConfig = {
             apiKey: "AIzaSyBbTBZlAA9sprHmHYIrOL9Ct1yBU8_gVOU",
             authDomain: "svk-auth.firebaseapp.com",
@@ -27,17 +26,22 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        window.loginWithGoogle = function() {
-            signInWithPopup(auth, provider)
-                .then((result) => {
+        // Check if the user just returned from Google login redirect
+        getRedirectResult(auth)
+            .then((result) => {
+                if (result) {
                     const user = result.user;
                     alert("Successfully logged in as: " + user.displayName);
                     window.location.href = "study.html";
-                })
-                .catch((error) => {
-                    console.error("Login Error: ", error.message);
-                    alert("Login failed: " + error.message);
-                });
+                }
+            })
+            .catch((error) => {
+                console.error("Login Redirect Error: ", error.message);
+                alert("Login failed: " + error.message);
+            });
+
+        window.loginWithGoogle = function() {
+            signInWithRedirect(auth, provider);
         };
     </script>
 </body>
