@@ -2,13 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login - 3SVK</title>
+    <title>3SVK.tech - Education Platform</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f8f9fa; color: #333; }
+        header { background: #0066cc; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        nav { display: flex; align-items: center; gap: 20px; }
+        nav a { color: white; text-decoration: none; font-weight: bold; }
+        nav a:hover { text-decoration: underline; }
+        .container { max-width: 1000px; margin: 40px auto; padding: 20px; text-align: center; }
+        .btn-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 30px; }
+        .btn { background: white; border: 2px solid #0066cc; color: #0066cc; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; text-decoration: none; transition: 0.3s; }
+        .btn:hover { background: #0066cc; color: white; }
+        .auth-card { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: inline-block; margin-top: 50px; }
+        .auth-btn { background: #db4437; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
+        .auth-btn:hover { background: #c23321; }
+    </style>
 </head>
 <body>
-    <h2>Sign in to 3SVK</h2>
-    <!-- Dynamic button that changes based on auth state -->
-    <button id="authButton" onclick="handleAuth()">Sign in with Google</button>
-    <p id="userInfo"></p>
+
+    <header>
+        <h2>3SVK.tech</h2>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="study.html">Study</a>
+            <span id="navAuthText" style="color: #ffeb3b; font-size: 14px;"></span>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Logged-In View (Study Portal) -->
+        <div id="portalView" style="display: none;">
+            <h1>Welcome to 3SVK Study Portal</h1>
+            <p>Select your education level below to access curated YouTube video lessons:</p>
+            
+            <div class="btn-grid">
+                <a href="study.html?level=kg" class="btn">KG & Primary</a>
+                <a href="study.html?level=highschool" class="btn">High School (6-10)</a>
+                <a href="study.html?level=intermediate" class="btn">Intermediate / 10+2</a>
+                <a href="study.html?level=ug" class="btn">Undergraduate (UG / B.Tech)</a>
+                <a href="study.html?level=pg" class="btn">Postgraduate (PG)</a>
+            </div>
+            <br><br>
+            <button onclick="handleAuth()" class="auth-btn" style="background: #333;">Logout</button>
+        </div>
+
+        <!-- Logged-Out View (Login Screen) -->
+        <div id="loginView" class="auth-card" style="display: none;">
+            <h2>Sign in to 3SVK</h2>
+            <p>Access educational resources by signing in with your Google account.</p>
+            <br>
+            <button id="authButton" onclick="handleAuth()" class="auth-btn">Sign in with Google</button>
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -28,38 +73,39 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        const authButton = document.getElementById("authButton");
-        const userInfo = document.getElementById("userInfo");
+        const portalView = document.getElementById("portalView");
+        const loginView = document.getElementById("loginView");
+        const navAuthText = document.getElementById("navAuthText");
 
         // Handle redirect result after Google returns user back
         getRedirectResult(auth).catch((error) => {
             console.error("Login Redirect Error: ", error.message);
         });
 
-        // Listen for user login/logout state changes live on the page
+        // Listen for live authentication state changes
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // User is signed in -> Show Logout option and user info
-                authButton.innerText = "Logout";
-                userInfo.innerText = "Logged in as: " + (user.displayName || user.email);
+                // User is signed in: show the study portal and custom navbar text
+                portalView.style.display = "block";
+                loginView.style.display = "none";
+                navAuthText.innerText = user.displayName || user.email;
             } else {
-                // User is signed out -> Show Sign-in option
-                authButton.innerText = "Sign in with Google";
-                userInfo.innerText = "";
+                // User is signed out: show the login card
+                portalView.style.display = "none";
+                loginView.style.display = "inline-block";
+                navAuthText.innerText = "";
             }
         });
 
-        // Unified button click handler for both Login and Logout
+        // Unified Handler for Login / Logout clicks
         window.handleAuth = function() {
             if (auth.currentUser) {
-                // If logged in, perform logout
                 signOut(auth).then(() => {
                     alert("Logged out successfully.");
                 }).catch((error) => {
                     console.error("Logout Error: ", error);
                 });
             } else {
-                // If logged out, start Google Sign-in redirect
                 signInWithRedirect(auth, provider);
             }
         };
