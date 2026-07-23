@@ -43,27 +43,38 @@
             const container = document.getElementById("newsContainer");
             const API_KEY = "f49d968a27d10cd6903220dbcdbe070e";
             const targetUrl = `https://gnews.io/api/v4/top-headlines?category=general&lang=en&max=10&apikey=${API_KEY}`;
-            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
+            
+            const proxies = [
+                `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
+                `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
+            ];
 
-            try {
-                const response = await fetch(proxyUrl);
-                const data = await response.json();
+            let data = null;
 
-                if (data && data.articles && data.articles.length > 0) {
-                    let html = "<ul>";
-                    data.articles.forEach(article => {
-                        html += `<li>
-                                    <a href="${article.url}" target="_blank">${article.title}</a>
-                                    <span class="news-source">Source: ${article.source.name} &bull; ${new Date(article.publishedAt).toLocaleString()}</span>
-                                 </li>`;
-                    });
-                    html += "</ul>";
-                    container.innerHTML = html;
-                } else {
-                    container.innerHTML = `<p>No trending headlines available at the moment.</p>`;
+            for (let proxyUrl of proxies) {
+                try {
+                    const response = await fetch(proxyUrl);
+                    if (response.ok) {
+                        data = await response.json();
+                        if (data && data.articles) break;
+                    }
+                } catch (err) {
+                    console.warn("Proxy attempt failed, trying next...", err);
                 }
-            } catch (error) {
-                container.innerHTML = `<p>Unable to connect to GNews API right now. Please check back shortly.</p>`;
+            }
+
+            if (data && data.articles && data.articles.length > 0) {
+                let html = "<ul>";
+                data.articles.forEach(article => {
+                    html += `<li>
+                                <a href="${article.url}" target="_blank">${article.title}</a>
+                                <span class="news-source">Source: ${article.source.name} &bull; ${new Date(article.publishedAt).toLocaleString()}</span>
+                             </li>`;
+                });
+                html += "</ul>";
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `<p>No trending headlines available at the moment or API limit reached.</p>`;
             }
         }
 
