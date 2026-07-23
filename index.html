@@ -9,10 +9,10 @@
         nav { display: flex; align-items: center; gap: 20px; }
         nav a, nav button.logout-link { color: white; text-decoration: none; font-weight: bold; background: none; border: none; cursor: pointer; font-size: 16px; padding: 0; }
         nav a:hover, nav button.logout-link:hover { text-decoration: underline; }
-        .container { max-width: 1200px; margin: 30px auto; padding: 20px; }
+        .container { max-width: 1200px; margin: 30px auto; padding: 20px; text-align: center; }
         
         .login-layout { display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; align-items: flex-start; margin-top: 20px; }
-        .news-sidebar { flex: 1; min-width: 300px; max-width: 500px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: left; max-height: 400px; overflow-y: auto; }
+        .news-sidebar { flex: 1; min-width: 300px; max-width: 500px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: left; }
         .news-sidebar h3 { color: #0066cc; border-bottom: 2px solid #e9ecef; padding-bottom: 8px; margin-top: 0; }
         
         .auth-card { flex: 1; min-width: 300px; max-width: 400px; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
@@ -41,14 +41,14 @@
 
     <div class="container">
         <!-- Loading state -->
-        <div id="loadingView" style="margin-top: 50px; font-size: 18px; color: #666; text-align: center;">
+        <div id="loadingView" style="margin-top: 50px; font-size: 18px; color: #666;">
             Verifying session...
         </div>
 
         <!-- Login Screen with Free Live News Sidebar -->
         <div id="loginView" style="display: none;" class="login-layout">
             
-            <!-- Left Sidebar: Live News via Public RSS Proxy -->
+            <!-- Left Sidebar: Live News Feed -->
             <div class="news-sidebar">
                 <h3>🌐 Live Worldwide Trending News</h3>
                 <div id="newsTicker" style="font-size: 14px; color: #555; padding: 10px 0;">
@@ -137,20 +137,23 @@
         const headerLogoutBtn = document.getElementById("headerLogoutBtn");
         const welcomeMsg = document.getElementById("welcomeMsg");
 
-        // Fetch Live RSS News Feed (CORS-friendly public feed)
+        // Reliable CORS-free public news fetcher
         async function fetchTrendingNews() {
             const newsContainer = document.getElementById("newsTicker");
-            const rssUrl = "https://api.rss2json.com/v1/api.json?rss_url=https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en";
-
             try {
-                const response = await fetch(rssUrl);
+                const response = await fetch("https://api.allorigins.win/get?url=" + encodeURIComponent("https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en"));
                 const data = await response.json();
-                
-                if (data && data.items && data.items.length > 0) {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(data.contents, "text/xml");
+                const items = xmlDoc.querySelectorAll("item");
+
+                if (items.length > 0) {
                     let newsHtml = "<ul style='padding-left: 20px; margin: 0;'>";
-                    data.items.slice(0, 6).forEach(item => {
-                        newsHtml += `<li style="margin-bottom: 12px;"><a href="${item.link}" target="_blank" style="color: #0066cc; text-decoration: none; font-weight: bold;">${item.title}</a><br><span style="font-size: 11px; color: #888;">${new Date(item.pubDate).toLocaleTimeString()}</span></li>`;
-                    });
+                    for (let i = 0; i < Math.min(6, items.length); i++) {
+                        let title = items[i].querySelector("title").textContent;
+                        let link = items[i].querySelector("link").textContent;
+                        newsHtml += `<li style="margin-bottom: 12px;"><a href="${link}" target="_blank" style="color: #0066cc; text-decoration: none; font-weight: bold;">${title}</a></li>`;
+                    }
                     newsHtml += "</ul>";
                     newsContainer.innerHTML = newsHtml;
                 } else {
@@ -162,7 +165,6 @@
             }
         }
 
-        // Load news immediately on page load without needing login
         fetchTrendingNews();
 
         setPersistence(auth, browserLocalPersistence).then(() => {
@@ -198,7 +200,7 @@
         window.handleAnonymousLogin = function() {
             signInAnonymously(auth).catch((error) => {
                 console.error("Anonymous Sign-In Error: ", error);
-                alert("Guest login failed: "- error.message);
+                alert("Guest login failed: " + error.message);
             });
         };
 
