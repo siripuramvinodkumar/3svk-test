@@ -40,7 +40,7 @@
             Verifying session...
         </div>
 
-        <!-- Login Screen with Added Anonymous Option -->
+        <!-- Login Screen with Google and Anonymous Options -->
         <div id="loginView" class="auth-card" style="display: none;">
             <h2>Sign in to 3SVK</h2>
             <p>Access professional study materials via Google or browse instantly as a guest.</p>
@@ -55,6 +55,14 @@
                 <h1>Welcome to 3SVK Professional Study Portal</h1>
                 <p id="welcomeMsg" style="font-weight: bold; color: #0066cc;"></p>
                 <p>Select your professional academic track below:</p>
+            </div>
+
+            <!-- Live Worldwide Trending News Module Added Here -->
+            <div class="category-section">
+                <h3>🌐 Live Worldwide Trending News</h3>
+                <div id="newsTicker" style="font-size: 14px; color: #555; padding: 10px 0;">
+                    Loading live headlines...
+                </div>
             </div>
 
             <div class="category-section">
@@ -120,6 +128,32 @@
         const headerLogoutBtn = document.getElementById("headerLogoutBtn");
         const welcomeMsg = document.getElementById("welcomeMsg");
 
+        // Live News Fetcher Function using Currents API (or replace with your key)
+        async function fetchTrendingNews() {
+            const newsContainer = document.getElementById("newsTicker");
+            const API_KEY = "YOUR_NEWS_API_KEY"; // Replace with your free API key from currentsapi.services
+            const url = `https://api.currentsapi.services/v1/latest-news?language=en&apiKey=${API_KEY}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data && data.news && data.news.length > 0) {
+                    let newsHtml = "<ul style='padding-left: 20px; margin: 0; text-align: left;'>";
+                    data.news.slice(0, 5).forEach(article => {
+                        newsHtml += `<li style="margin-bottom: 8px;"><a href="${article.url}" target="_blank" style="color: #0066cc; text-decoration: none;">${article.title}</a> <span style="font-size: 11px; color: #886;">(${article.source})</span></li>`;
+                    });
+                    newsHtml += "</ul>";
+                    newsContainer.innerHTML = newsHtml;
+                } else {
+                    newsContainer.innerHTML = "No live news available right now.";
+                }
+            } catch (error) {
+                console.error("Error fetching news:", error);
+                newsContainer.innerHTML = "Unable to load live trending news at the moment.";
+            }
+        }
+
         setPersistence(auth, browserLocalPersistence).then(() => {
             return getRedirectResult(auth);
         }).catch((error) => {
@@ -138,6 +172,9 @@
                 } else {
                     welcomeMsg.innerText = "Authenticated as: " + (user.displayName || user.email);
                 }
+
+                // Trigger live news ticker load upon successful session validation
+                fetchTrendingNews();
             } else {
                 portalView.style.display = "none";
                 loginView.style.display = "inline-block";
@@ -150,7 +187,6 @@
             signInWithRedirect(auth, provider);
         };
 
-        // Instant Guest Login without prompts or passwords
         window.handleAnonymousLogin = function() {
             signInAnonymously(auth).catch((error) => {
                 console.error("Anonymous Sign-In Error: ", error);
