@@ -25,13 +25,12 @@
         <nav>
             <a href="index.html">Home</a>
             <a href="study.html">Study</a>
-            <!-- Logout option in header (hidden when logged out, visible when logged in) -->
             <button id="headerLogoutBtn" onclick="handleAuth()" class="logout-link" style="display: none;">Logout</button>
         </nav>
     </header>
 
     <div class="container">
-        <!-- Step 1: Login Screen (Shown First by Default) -->
+        <!-- Login Screen -->
         <div id="loginView" class="auth-card" style="display: none;">
             <h2>Sign in to 3SVK</h2>
             <p>Access educational resources by signing in with your Google account.</p>
@@ -39,7 +38,7 @@
             <button id="authButton" onclick="handleAuth()" class="auth-btn">Sign in with Google</button>
         </div>
 
-        <!-- Step 2: Dashboard / Study Portal (Shown Second, Only After Sign In) -->
+        <!-- Dashboard / Study Portal -->
         <div id="portalView" style="display: none;">
             <h1>Welcome to 3SVK Study Portal</h1>
             <p id="welcomeMsg" style="font-weight: bold; color: #0066cc;"></p>
@@ -80,19 +79,29 @@
         const headerLogoutBtn = document.getElementById("headerLogoutBtn");
         const welcomeMsg = document.getElementById("welcomeMsg");
 
-        getRedirectResult(auth).catch((error) => {
-            console.error("Login Redirect Error: ", error.message);
-        });
+        // Explicitly handle and await redirect token completion first
+        getRedirectResult(auth)
+            .then((result) => {
+                if (result && result.user) {
+                    // Force immediate UI display update upon successful token return
+                    loginView.style.display = "none";
+                    portalView.style.display = "block";
+                    headerLogoutBtn.style.display = "inline-block";
+                    welcomeMsg.innerText = "Logged in as: " + (result.user.displayName || result.user.email);
+                }
+            })
+            .catch((error) => {
+                console.error("Login Redirect Error: ", error.message);
+            });
 
+        // Backup state listener to manage page views dynamically
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Logged In: Hide login card, show portal and header logout option
                 loginView.style.display = "none";
                 portalView.style.display = "block";
                 headerLogoutBtn.style.display = "inline-block";
                 welcomeMsg.innerText = "Logged in as: " + (user.displayName || user.email);
             } else {
-                // Logged Out: Show login card, hide portal and header logout option
                 loginView.style.display = "inline-block";
                 portalView.style.display = "none";
                 headerLogoutBtn.style.display = "none";
