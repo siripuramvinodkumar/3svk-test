@@ -1,1 +1,73 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>3SVK.tech - World Trending News</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f8f9fa; color: #333; }
+        header { background: #0066cc; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        nav { display: flex; align-items: center; gap: 20px; }
+        nav a { color: white; text-decoration: none; font-weight: bold; }
+        nav a:hover { text-decoration: underline; }
+        .container { max-width: 900px; margin: 40px auto; padding: 25px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { color: #0066cc; border-bottom: 2px solid #e9ecef; padding-bottom: 10px; margin-top: 0; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: #0066cc; text-decoration: none; font-weight: bold; }
+        .back-link:hover { text-decoration: underline; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 15px; }
+        li a { color: #0066cc; text-decoration: none; font-weight: bold; font-size: 16px; }
+        li a:hover { text-decoration: underline; }
+        .news-source { font-size: 12px; color: #666; display: block; margin-top: 3px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>3SVK.tech</h2>
+        <nav>
+            <a href="../index.html">Home</a>
+            <a href="../study.html">Study Hub</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <a href="../index.html" class="back-link">&larr; Back to Home Directory</a>
+        <h2>🌐 World Trending News</h2>
+        <div id="newsContainer" style="font-size: 15px; color: #555;">
+            Fetching real-time global trending headlines...
+        </div>
+    </div>
+
+    <script>
+        async function fetchTrendingNews() {
+            const container = document.getElementById("newsContainer");
+            const API_KEY = "5887b7840464e8df06bb3cc6cb79bbd9";
+            const url = `https://gnews.io/api/v4/top-headlines?category=general&lang=en&max=10&apikey=${API_KEY}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data && data.articles && data.articles.length > 0) {
+                    let html = "<ul>";
+                    data.articles.forEach(article => {
+                        html += `<li>
+                                    <a href="${article.url}" target="_blank">${article.title}</a>
+                                    <span class="news-source">Source: ${article.source.name} &bull; ${new Date(article.publishedAt).toLocaleString()}</span>
+                                 </li>`;
+                    });
+                    html += "</ul>";
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = `<p>No trending headlines available at the moment.</p>`;
+                }
+            } catch (error) {
+                container.innerHTML = `<p>Unable to connect to GNews API right now.</p>`;
+            }
+        }
+
+        fetchTrendingNews();
+    </script>
+</body>
+</html>
