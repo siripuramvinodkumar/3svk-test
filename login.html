@@ -2,69 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login - 3SVK.tech</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; background-color: #f8f9fa; color: #333; }
-        header { background: #0066cc; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
-        nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold; }
-        nav a:hover { text-decoration: underline; }
-        .login-container { max-width: 400px; margin: 60px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; }
-        .form-group { margin-bottom: 20px; text-align: left; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .btn { width: 100%; background: #0066cc; color: white; border: none; padding: 12px; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        .btn:hover { background: #0052a3; }
-        .google-btn { background: #db4437; margin-top: 15px; }
-        .google-btn:hover { background: #c23321; }
-    </style>
+    <title>Login - 3SVK</title>
 </head>
 <body>
+    <h2>Sign in to 3SVK</h2>
+    <button onclick="loginWithGoogle()">Sign in with Google</button>
 
-    <header>
-        <h2>3SVK.tech</h2>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="study.html">Study</a>
-            <a href="login.html">Login</a>
-        </nav>
-    </header>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    <div class="login-container">
-        <h2>Sign In to 3SVK</h2>
-        
-        <!-- Standard Username/Password Form -->
-        <form onsubmit="handleLogin(event)">
-            <div class="form-group">
-                <label for="username">Username or Email</label>
-                <input type="text" id="username" required placeholder="Enter your email">
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" required placeholder="Enter your password">
-            </div>
-            <button type="submit" class="btn">Login</button>
-        </form>
+        // Your exact project config keys
+        const firebaseConfig = {
+            apiKey: "AIzaSy...",
+            authDomain: "3svk-auth.firebaseapp.com",
+            projectId: "3svk-auth",
+            storageBucket: "3svk-auth.firebasestorage.app",
+            messagingSenderId: "178863251618",
+            appId: "1:178863251618:web:21f1f549a2f11f76d1f7fb",
+            measurementId: "G-C5G8G5G09"
+        };
 
-        <hr style="margin: 25px 0; border: 0; border-top: 1px solid #ddd;">
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
-        <!-- Google Login Option -->
-        <button onclick="loginWithGoogle()" class="btn google-btn">Sign in with Google</button>
-    </div>
-
-    <script>
-        function handleLogin(event) {
-            event.preventDefault();
-            const user = document.getElementById('username').value;
-            alert("Login submitted for: " + user + "\n(Note: Connect Firebase Authentication to process live database passwords!)");
-            window.location.href = "study.html";
-        }
-
-        function loginWithGoogle() {
-            // Placeholder for Firebase Google Auth trigger
-            alert("Redirecting to Google Sign-In...\n(Configure Firebase SDK to enable real Google authentication.)");
-            window.location.href = "study.html";
-        }
+        window.loginWithGoogle = function() {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    alert("Successfully logged in as: " + user.displayName);
+                    window.location.href = "study.html";
+                })
+                .catch((error) => {
+                    console.error("Login Error: ", error.message);
+                    alert("Login failed: " + error.message);
+                });
+        };
     </script>
-
 </body>
 </html>
