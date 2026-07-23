@@ -6,12 +6,16 @@
     <style>
         body { font-family: Arial, sans-serif; margin: 0; background-color: #f8f9fa; color: #333; }
         header { background: #0066cc; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
-        nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold; }
+        nav { display: flex; align-items: center; gap: 20px; }
+        nav a { color: white; text-decoration: none; font-weight: bold; }
         nav a:hover { text-decoration: underline; }
         .container { max-width: 1000px; margin: 40px auto; padding: 20px; text-align: center; }
         .btn-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 30px; }
         .btn { background: white; border: 2px solid #0066cc; color: #0066cc; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; text-decoration: none; transition: 0.3s; }
         .btn:hover { background: #0066cc; color: white; }
+        .auth-card { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: inline-block; margin-top: 50px; }
+        .auth-btn { background: #db4437; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
+        .auth-btn:hover { background: #c23321; }
     </style>
 </head>
 <body>
@@ -21,21 +25,83 @@
         <nav>
             <a href="index.html">Home</a>
             <a href="study.html">Study</a>
+            <span id="navAuthText" style="color: #ffeb3b; font-size: 14px;"></span>
         </nav>
     </header>
 
     <div class="container">
-        <h1>Welcome to 3SVK Study Portal</h1>
-        <p>Select your education level below to access curated YouTube video lessons:</p>
-        
-        <div class="btn-grid">
-            <a href="study.html?level=kg" class="btn">KG & Primary</a>
-            <a href="study.html?level=highschool" class="btn">High School (6-10)</a>
-            <a href="study.html?level=intermediate" class="btn">Intermediate / 10+2</a>
-            <a href="study.html?level=ug" class="btn">Undergraduate (UG / B.Tech)</a>
-            <a href="study.html?level=pg" class="btn">Postgraduate (PG)</a>
+        <!-- Step 1: Login Screen (Shown First) -->
+        <div id="loginView" class="auth-card">
+            <h2>Sign in to 3SVK</h2>
+            <p>Access educational resources by signing in with your Google account.</p>
+            <br>
+            <button id="authButton" onclick="handleAuth()" class="auth-btn">Sign in with Google</button>
+        </div>
+
+        <!-- Step 2: Dashboard / Study Portal (Shown Second, After Sign In) -->
+        <div id="portalView" style="display: none;">
+            <h1>Welcome to 3SVK Study Portal</h1>
+            <p>Select your education level below to access curated YouTube video lessons:</p>
+            
+            <div class="btn-grid">
+                <a href="study.html?level=kg" class="btn">KG & Primary</a>
+                <a href="study.html?level=highschool" class="btn">High School (6-10)</a>
+                <a href="study.html?level=intermediate" class="btn">Intermediate / 10+2</a>
+                <a href="study.html?level=ug" class="btn">Undergraduate (UG / B.Tech)</a>
+                <a href="study.html?level=pg" class="btn">Postgraduate (PG)</a>
+            </div>
+            <br><br>
+            <button onclick="handleAuth()" class="auth-btn" style="background: #333;">Logout</button>
         </div>
     </div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBbTBZlAA9sprHmHYIrOL9Ct1yBU8_gVOU",
+            authDomain: "svk-auth.firebaseapp.com",
+            projectId: "svk-auth",
+            storageBucket: "svk-auth.firebasestorage.app",
+            messagingSenderId: "178863251618",
+            appId: "1:178863251618:web:21f1f549a2f11f76d1f7fb",
+            measurementId: "G-C5E85C5C09"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        const portalView = document.getElementById("portalView");
+        const loginView = document.getElementById("loginView");
+        const navAuthText = document.getElementById("navAuthText");
+
+        getRedirectResult(auth).catch((error) => {
+            console.error("Login Redirect Error: ", error.message);
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loginView.style.display = "none";
+                portalView.style.display = "block";
+                navAuthText.innerText = user.displayName || user.email;
+            } else {
+                loginView.style.display = "inline-block";
+                portalView.style.display = "none";
+                navAuthText.innerText = "";
+            }
+        });
+
+        window.handleAuth = function() {
+            if (auth.currentUser) {
+                signOut(auth).catch((error) => {
+                    console.error("Logout Error: ", error);
+                });
+            } else {
+                signInWithRedirect(auth, provider);
+            }
+        };
+    </script>
 </body>
 </html>
