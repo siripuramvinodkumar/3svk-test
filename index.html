@@ -14,7 +14,7 @@
         /* Side-by-side Layout */
         .login-layout { display: flex; flex-direction: row; gap: 30px; justify-content: center; align-items: flex-start; margin-top: 20px; flex-wrap: wrap; }
         
-        /* Left Sidebar: Header on top, list & feed side-by-side below */
+        /* Left Sidebar Layout */
         .news-sidebar { flex: 1; min-width: 380px; max-width: 600px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: left; box-sizing: border-box; }
         .news-sidebar h3 { color: #0066cc; border-bottom: 2px solid #e9ecef; padding-bottom: 8px; margin-top: 0; margin-bottom: 15px; font-size: 16px; }
         
@@ -56,12 +56,12 @@
             Verifying session...
         </div>
 
-        <!-- Login Screen with Regional News Header Above Options -->
+        <!-- Login Screen with Regional News Header Placed Above Options -->
         <div id="loginView" style="display: none;" class="login-layout">
             
-            <!-- Left Sidebar -->
+            <!-- Left Sidebar: Regional News Header at the Top -->
             <div class="news-sidebar">
-                <h3>🌐 Regional News (Global Country Feeds)</h3>
+                <h3>🌐 Regional News</h3>
                 <div class="sidebar-content-wrapper">
                     <div class="country-list-box" id="countryListContainer">
                         <!-- Populated dynamically -->
@@ -157,24 +157,24 @@
         const welcomeMsg = document.getElementById("welcomeMsg");
 
         const countries = [
-            { name: "India", flag: "🇮🇳", code: "in" }, { name: "United States", flag: "🇺🇸", code: "us" }, { name: "United Kingdom", flag: "🇬🇧", code: "gb" },
-            { name: "Canada", flag: "🇨🇦", code: "ca" }, { name: "Australia", flag: "🇦🇺", code: "au" }, { name: "Afghanistan", flag: "🇦🇫", code: "af" },
-            { name: "Albania", flag: "🇦🇱", code: "al" }, { name: "Algeria", flag: "🇩🇿", code: "dz" }, { name: "Argentina", flag: "🇦🇷", code: "ar" },
-            { name: "Armenia", flag: "🇦🇲", code: "am" }, { name: "Austria", flag: "🇦🇹", code: "at" }, { name: "Bangladesh", flag: "🇧🇩", code: "bd" },
-            { name: "Belgium", flag: "🇧🇪", code: "be" }, { name: "Brazil", flag: "🇧🇷", code: "br" }, { name: "China", flag: "🇨🇳", code: "cn" },
-            { name: "Colombia", flag: "🇨🇴", code: "co" }, { name: "Denmark", flag: "🇩🇰", code: "dk" }, { name: "Egypt", flag: "🇪🇬", code: "eg" },
-            { name: "France", flag: "🇫🇷", code: "fr" }, { name: "Germany", flag: "🇩🇪", code: "de" }, { name: "Greece", flag: "🇬🇷", code: "gr" },
-            { name: "Indonesia", flag: "🇮🇩", code: "id" }, { name: "Iran", flag: "🇮🇷", code: "ir" }, { name: "Iraq", flag: "🇮🇶", code: "iq" },
-            { name: "Ireland", flag: "🇮🇪", code: "ie" }, { name: "Israel", flag: "🇮🇱", code: "il" }, { name: "Italy", flag: "🇮🇹", code: "it" },
-            { name: "Japan", flag: "🇯🇵", code: "jp" }, { name: "Kenya", flag: "🇰🇪", code: "ke" }, { name: "Malaysia", flag: "🇲🇾", code: "my" },
-            { name: "Mexico", flag: "🇲🇽", code: "mx" }, { name: "Nepal", flag: "🇳🇵", code: "np" }, { name: "Netherlands", flag: "🇳🇱", code: "nl" },
-            { name: "New Zealand", flag: "🇳🇿", code: "nz" }, { name: "Nigeria", flag: "🇳🇬", code: "ng" }, { name: "Pakistan", flag: "🇵🇰", code: "pk" },
-            { name: "Philippines", flag: "🇵🇭", code: "ph" }, { name: "Poland", flag: "🇵🇱", code: "pl" }, { name: "Portugal", flag: "🇵🇹", code: "pt" },
-            { name: "Russia", flag: "🇷🇺", code: "ru" }, { name: "Saudi Arabia", flag: "🇸🇦", code: "sa" }, { name: "Singapore", flag: "🇸🇬", code: "sg" },
-            { name: "South Africa", flag: "🇿🇦", code: "za" }, { name: "South Korea", flag: "🇰🇷", code: "kr" }, { name: "Spain", flag: "🇪🇸", code: "es" },
-            { name: "Sri Lanka", flag: "🇱🇰", code: "lk" }, { name: "Sweden", flag: "🇸🇪", code: "se" }, { name: "Switzerland", flag: "🇨🇭", code: "ch" },
-            { name: "Taiwan", flag: "🇹🇼", code: "tw" }, { name: "Thailand", flag: "🇹🇭", code: "th" }, { name: "Turkey", flag: "🇹🇷", code: "tr" },
-            { name: "Ukraine", flag: "🇺🇦", code: "ua" }, { name: "UAE", flag: "🇦🇪", code: "ae" }, { name: "Vietnam", flag: "🇻🇳", code: "vn" }
+            { name: "India", flag: "🇮🇳" }, { name: "United States", flag: "🇺🇸" }, { name: "United Kingdom", flag: "🇬🇧" },
+            { name: "Canada", flag: "🇨🇦" }, { name: "Australia", flag: "🇦🇺" }, { name: "Afghanistan", flag: "🇦🇫" },
+            { name: "Albania", flag: "🇦🇱" }, { name: "Algeria", flag: "🇩🇿" }, { name: "Argentina", flag: "🇦🇷" },
+            { name: "Armenia", flag: "🇦🇲" }, { name: "Austria", flag: "🇦🇹" }, { name: "Bangladesh", flag: "🇧🇩" },
+            { name: "Belgium", flag: "🇧🇪" }, { name: "Brazil", flag: "🇧🇷" }, { name: "China", flag: "🇨🇳" },
+            { name: "Colombia", flag: "🇨🇴" }, { name: "Denmark", flag: "🇩🇰" }, { name: "Egypt", flag: "🇪🇬" },
+            { name: "France", flag: "🇫🇷" }, { name: "Germany", flag: "🇩🇪" }, { name: "Greece", flag: "🇬🇷" },
+            { name: "Indonesia", flag: "🇮🇩" }, { name: "Iran", flag: "🇮🇷" }, { name: "Iraq", flag: "🇮🇶" },
+            { name: "Ireland", flag: "🇮🇪" }, { name: "Israel", flag: "🇮🇱" }, { name: "Italy", flag: "🇮🇹" },
+            { name: "Japan", flag: "🇯🇵" }, { name: "Kenya", flag: "🇰🇪" }, { name: "Malaysia", flag: "🇲🇾" },
+            { name: "Mexico", flag: "🇲🇽" }, { name: "Nepal", flag: "🇳🇵" }, { name: "Netherlands", flag: "🇳🇱" },
+            { name: "New Zealand", flag: "🇳🇿" }, { name: "Nigeria", flag: "🇳🇬" }, { name: "Pakistan", flag: "🇵🇰" },
+            { name: "Philippines", flag: "🇵🇭" }, { name: "Poland", flag: "🇵🇱" }, { name: "Portugal", flag: "🇵🇹" },
+            { name: "Russia", flag: "🇷🇺" }, { name: "Saudi Arabia", flag: "🇸🇦" }, { name: "Singapore", flag: "🇸🇬" },
+            { name: "South Africa", flag: "🇿🇦" }, { name: "South Korea", flag: "🇰🇷" }, { name: "Spain", flag: "🇪🇸" },
+            { name: "Sri Lanka", flag: "🇱🇰" }, { name: "Sweden", flag: "🇸🇪" }, { name: "Switzerland", flag: "🇨🇭" },
+            { name: "Taiwan", flag: "🇹🇼" }, { name: "Thailand", flag: "🇹🇭" }, { name: "Turkey", flag: "🇹🇷" },
+            { name: "Ukraine", flag: "🇺🇦" }, { name: "UAE", flag: "🇦🇪" }, { name: "Vietnam", flag: "🇻🇳" }
         ];
 
         function renderCountryList() {
@@ -196,10 +196,10 @@
             fetchNewsForCountry(countryName);
         }
 
-        // Fetch live headlines instantly using your GNews search endpoint via CORS proxy
+        // Fetch live news using your GNews API key and CORS proxy to bypass browser restrictions
         async function fetchNewsForCountry(countryName) {
             const newsContainer = document.getElementById("newsTicker");
-            const API_KEY = "f49d968a27d10cd6903220dbcdbe070e"; 
+            const API_KEY = "5887b7840464e8df06bb3cc6cb79bbd9"; 
             const targetUrl = `https://gnews.io/api/v4/search?q=${encodeURIComponent(countryName)}&lang=en&max=5&apikey=${API_KEY}`;
             const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
 
