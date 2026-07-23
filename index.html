@@ -150,26 +150,26 @@
         const headerLogoutBtn = document.getElementById("headerLogoutBtn");
         const welcomeMsg = document.getElementById("welcomeMsg");
 
-        // Comprehensive list of sovereign countries with flags
+        // Sovereign countries list with code mapping for World News API
         const countries = [
-            { name: "India", flag: "🇮🇳" }, { name: "United States", flag: "🇺🇸" }, { name: "United Kingdom", flag: "🇬🇧" },
-            { name: "Canada", flag: "🇨🇦" }, { name: "Australia", flag: "🇦🇺" }, { name: "Afghanistan", flag: "🇦🇫" },
-            { name: "Albania", flag: "🇦🇱" }, { name: "Algeria", flag: "🇩🇿" }, { name: "Argentina", flag: "🇦🇷" },
-            { name: "Armenia", flag: "🇦🇲" }, { name: "Austria", flag: "🇦🇹" }, { name: "Bangladesh", flag: "🇧🇩" },
-            { name: "Belgium", flag: "🇧🇪" }, { name: "Brazil", flag: "🇧🇷" }, { name: "China", flag: "🇨🇳" },
-            { name: "Colombia", flag: "🇨🇴" }, { name: "Denmark", flag: "🇩🇰" }, { name: "Egypt", flag: "🇪🇬" },
-            { name: "France", flag: "🇫🇷" }, { name: "Germany", flag: "🇩🇪" }, { name: "Greece", flag: "🇬🇷" },
-            { name: "Indonesia", flag: "🇮🇩" }, { name: "Iran", flag: "🇮🇷" }, { name: "Iraq", flag: "🇮🇶" },
-            { name: "Ireland", flag: "🇮🇪" }, { name: "Israel", flag: "🇮🇱" }, { name: "Italy", flag: "🇮🇹" },
-            { name: "Japan", flag: "🇯🇵" }, { name: "Kenya", flag: "🇰🇪" }, { name: "Malaysia", flag: "🇲🇾" },
-            { name: "Mexico", flag: "🇲🇽" }, { name: "Nepal", flag: "🇳🇵" }, { name: "Netherlands", flag: "🇳🇱" },
-            { name: "New Zealand", flag: "🇳🇿" }, { name: "Nigeria", flag: "🇳🇬" }, { name: "Pakistan", flag: "🇵🇰" },
-            { name: "Philippines", flag: "🇵🇭" }, { name: "Poland", flag: "🇵🇱" }, { name: "Portugal", flag: "🇵🇹" },
-            { name: "Russia", flag: "🇷🇺" }, { name: "Saudi Arabia", flag: "🇸🇦" }, { name: "Singapore", flag: "🇸🇬" },
-            { name: "South Africa", flag: "🇿🇦" }, { name: "South Korea", flag: "🇰🇷" }, { name: "Spain", flag: "🇪🇸" },
-            { name: "Sri Lanka", flag: "🇱🇰" }, { name: "Sweden", flag: "🇸🇪" }, { name: "Switzerland", flag: "🇨🇭" },
-            { name: "Taiwan", flag: "🇹🇼" }, { name: "Thailand", flag: "🇹🇭" }, { name: "Turkey", flag: "🇹🇷" },
-            { name: "Ukraine", flag: "🇺🇦" }, { name: "UAE", flag: "🇦🇪" }, { name: "Vietnam", flag: "🇻🇳" }
+            { name: "India", flag: "🇮🇳", code: "in" }, { name: "United States", flag: "🇺🇸", code: "us" }, { name: "United Kingdom", flag: "🇬🇧", code: "gb" },
+            { name: "Canada", flag: "🇨🇦", code: "ca" }, { name: "Australia", flag: "🇦🇺", code: "au" }, { name: "Afghanistan", flag: "🇦🇫", code: "af" },
+            { name: "Albania", flag: "🇦🇱", code: "al" }, { name: "Algeria", flag: "🇩🇿", code: "dz" }, { name: "Argentina", flag: "🇦🇷", code: "ar" },
+            { name: "Armenia", flag: "🇦🇲", code: "am" }, { name: "Austria", flag: "🇦🇹", code: "at" }, { name: "Bangladesh", flag: "🇧🇩", code: "bd" },
+            { name: "Belgium", flag: "🇧🇪", code: "be" }, { name: "Brazil", flag: "🇧🇷", code: "br" }, { name: "China", flag: "🇨🇳", code: "cn" },
+            { name: "Colombia", flag: "🇨🇴", code: "co" }, { name: "Denmark", flag: "🇩🇰", code: "dk" }, { name: "Egypt", flag: "🇪🇬", code: "eg" },
+            { name: "France", flag: "🇫🇷", code: "fr" }, { name: "Germany", flag: "🇩🇪", code: "de" }, { name: "Greece", flag: "🇬🇷", code: "gr" },
+            { name: "Indonesia", flag: "🇮🇩", code: "id" }, { name: "Iran", flag: "🇮🇷", code: "ir" }, { name: "Iraq", flag: "🇮🇶", code: "iq" },
+            { name: "Ireland", flag: "🇮🇪", code: "ie" }, { name: "Israel", flag: "🇮🇱", code: "il" }, { name: "Italy", flag: "🇮🇹", code: "it" },
+            { name: "Japan", flag: "🇯🇵", code: "jp" }, { name: "Kenya", flag: "🇰🇪", code: "ke" }, { name: "Malaysia", flag: "🇲🇾", code: "my" },
+            { name: "Mexico", flag: "🇲🇽", code: "mx" }, { name: "Nepal", flag: "🇳🇵", code: "np" }, { name: "Netherlands", flag: "🇳🇱", code: "nl" },
+            { name: "New Zealand", flag: "🇳🇿", code: "nz" }, { name: "Nigeria", flag: "🇳🇬", code: "ng" }, { name: "Pakistan", flag: "🇵🇰", code: "pk" },
+            { name: "Philippines", flag: "🇵🇭", code: "ph" }, { name: "Poland", flag: "🇵🇱", code: "pl" }, { name: "Portugal", flag: "🇵🇹", code: "pt" },
+            { name: "Russia", flag: "🇷🇺", code: "ru" }, { name: "Saudi Arabia", flag: "🇸🇦", code: "sa" }, { name: "Singapore", flag: "🇸🇬", code: "sg" },
+            { name: "South Africa", flag: "🇿🇦", code: "za" }, { name: "South Korea", flag: "🇰🇷", code: "kr" }, { name: "Spain", flag: "🇪🇸", code: "es" },
+            { name: "Sri Lanka", flag: "🇱🇰", code: "lk" }, { name: "Sweden", flag: "🇸🇪", code: "se" }, { name: "Switzerland", flag: "🇨🇭", code: "ch" },
+            { name: "Taiwan", flag: "🇹🇼", code: "tw" }, { name: "Thailand", flag: "🇹🇭", code: "th" }, { name: "Turkey", flag: "🇹🇷", code: "tr" },
+            { name: "Ukraine", flag: "🇺🇦", code: "ua" }, { name: "UAE", flag: "🇦🇪", code: "ae" }, { name: "Vietnam", flag: "🇻🇳", code: "vn" }
         ];
 
         function renderCountryList() {
@@ -177,25 +177,25 @@
             let html = "";
             countries.forEach((c, index) => {
                 const activeClass = index === 0 ? "active" : "";
-                html += `<div class="country-item ${activeClass}" onclick="selectCountry('${c.name}', '${c.flag} ${c.name}', this)">
+                html += `<div class="country-item ${activeClass}" onclick="selectCountry('${c.code}', '${c.flag} ${c.name}', this)">
                             <span>${c.flag}</span> <span>${c.name}</span>
                          </div>`;
             });
             container.innerHTML = html;
         }
 
-        window.selectCountry = function(countryName, displayName, element) {
+        window.selectCountry = function(countryCode, displayName, element) {
             document.querySelectorAll(".country-item").forEach(el => el.classList.remove("active"));
             element.classList.add("active");
             document.getElementById("newsFeedTitle").innerText = displayName + " News";
-            fetchNewsForCountry(countryName);
+            fetchNewsForCountry(countryCode);
         }
 
-        // Fast JSON GNews Search Endpoint
-        async function fetchNewsForCountry(countryName) {
+        // Fetch live news using World News API with country filter
+        async function fetchNewsForCountry(countryCode) {
             const newsContainer = document.getElementById("newsTicker");
-            const API_KEY = "f49d968a27d10cd6903220dbcdbe070e"; 
-            const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(countryName)}&lang=en&max=5&apikey=${API_KEY}`;
+            const API_KEY = "1a1c64d25510487da5527ffdc221d15"; 
+            const url = `https://api.worldnewsapi.com/search-news?source-country=${countryCode}&language=en&number=5&api-key=${API_KEY}`;
 
             newsContainer.innerHTML = "Loading live news...";
 
@@ -203,15 +203,15 @@
                 const response = await fetch(url);
                 const data = await response.json();
                 
-                if (data && data.articles && data.articles.length > 0) {
+                if (data && data.news && data.news.length > 0) {
                     let newsHtml = "<ul style='padding-left: 15px; margin: 0;'>";
-                    data.articles.forEach(article => {
-                        newsHtml += `<li style="margin-bottom: 10px;"><a href="${article.url}" target="_blank" style="color: #0066cc; text-decoration: none; font-weight: bold; font-size: 11px;">${article.title}</a><br><span style="font-size: 10px; color: #888;">${article.source.name}</span></li>`;
+                    data.news.forEach(article => {
+                        newsHtml += `<li style="margin-bottom: 10px;"><a href="${article.url}" target="_blank" style="color: #0066cc; text-decoration: none; font-weight: bold; font-size: 11px;">${article.title}</a><br><span style="font-size: 10px; color: #888;">Source: ${article.source_country.toUpperCase()}</span></li>`;
                     });
                     newsHtml += "</ul>";
                     newsContainer.innerHTML = newsHtml;
                 } else {
-                    newsContainer.innerHTML = "No recent headlines found for " + countryName + ".";
+                    newsContainer.innerHTML = "No recent headlines found for this country.";
                 }
             } catch (error) {
                 console.error("Error fetching news:", error);
@@ -220,7 +220,7 @@
         }
 
         renderCountryList();
-        fetchNewsForCountry("India");
+        fetchNewsForCountry("in");
 
         setPersistence(auth, browserLocalPersistence).then(() => {
             return getRedirectResult(auth);
