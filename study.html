@@ -7,9 +7,11 @@
         body { font-family: Arial, sans-serif; margin: 0; background-color: #f8f9fa; color: #333; }
         header { background: #0066cc; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
         nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold; }
+        nav a:hover { text-decoration: underline; }
         .container { max-width: 1000px; margin: 30px auto; padding: 20px; text-align: center; }
         .video-box { background: white; padding: 20px; margin-top: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         iframe { width: 100%; max-width: 560px; height: 315px; border-radius: 5px; }
+        #level-title { color: #0066cc; text-transform: capitalize; }
     </style>
 </head>
 <body>
@@ -19,15 +21,16 @@
         <nav>
             <a href="index.html">Home</a>
             <a href="study.html">Study</a>
+            <a href="login.html">Login</a>
         </nav>
     </header>
 
     <div class="container">
-        <h1>Study Portal - Video Lessons</h1>
-        <p>Watch tutorials here to support the platform and learn!</p>
+        <h1 id="level-heading">Study Portal - Video Lessons</h1>
+        <p>Watch curated YouTube tutorials here to learn and support the platform!</p>
 
         <div class="video-box">
-            <h3>Featured Lesson</h3>
+            <h3 id="level-title">Featured Lesson</h3>
             <!-- Replace YOUTUBE_VIDEO_ID with your actual video ID -->
             <iframe src="https://www.youtube.com/embed/YOUTUBE_VIDEO_ID" 
                     title="YouTube video player" frameborder="0" 
@@ -36,6 +39,25 @@
             </iframe>
         </div>
     </div>
+
+    <script>
+        // Automatically detect which level button was clicked from index.html
+        const urlParams = new URLSearchParams(window.location.search);
+        const level = urlParams.get('level');
+
+        const headings = {
+            'kg': 'KG & Primary Study Material',
+            'highschool': 'High School (Grades 6-10) Lessons',
+            'intermediate': 'Intermediate / 10+2 Classes',
+            'ug': 'Undergraduate (UG / B.Tech) Lectures',
+            'pg': 'Postgraduate (PG) Research & Advanced Modules'
+        };
+
+        if (level && headings[level]) {
+            document.getElementById('level-heading').innerText = headings[level];
+            document.getElementById('level-title').innerText = level.toUpperCase() + ' Curated Playlist / Video';
+        }
+    </script>
 
 </body>
 </html>
