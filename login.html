@@ -77,31 +77,35 @@
         const loginView = document.getElementById("loginView");
         const navAuthText = document.getElementById("navAuthText");
 
-        // Handle redirect result after Google returns user back
-        getRedirectResult(auth).catch((error) => {
-            console.error("Login Redirect Error: ", error.message);
-        });
+        // Process the redirect result first, then let onAuthStateChanged handle the UI display
+        getRedirectResult(auth)
+            .then((result) => {
+                // Successfully returned from Google sign-in redirect
+            })
+            .catch((error) => {
+                console.error("Login Redirect Error: ", error.message);
+            });
 
-        // Listen for live authentication state changes
+        // Single centralized listener for UI updating based on user session state
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // User is signed in: show the study portal and custom navbar text
+                // User is logged in: show portal view, hide login card
                 portalView.style.display = "block";
                 loginView.style.display = "none";
                 navAuthText.innerText = user.displayName || user.email;
             } else {
-                // User is signed out: show the login card
+                // User is logged out: show login card, hide portal view
                 portalView.style.display = "none";
                 loginView.style.display = "inline-block";
                 navAuthText.innerText = "";
             }
         });
 
-        // Unified Handler for Login / Logout clicks
+        // Unified button click handler for both Login and Logout actions
         window.handleAuth = function() {
             if (auth.currentUser) {
                 signOut(auth).then(() => {
-                    alert("Logged out successfully.");
+                    // State change will automatically trigger onAuthStateChanged to show login view
                 }).catch((error) => {
                     console.error("Logout Error: ", error);
                 });
