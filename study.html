@@ -1,47 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>3SVK - Professional Study Materials</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; background-color: #f8f9fa; color: #333; }
-        header { background: #0066cc; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
-        nav { display: flex; align-items: center; gap: 20px; }
-        nav a, nav button.logout-link { color: white; text-decoration: none; font-weight: bold; background: none; border: none; cursor: pointer; font-size: 16px; padding: 0; }
-        nav a:hover, nav button.logout-link:hover { text-decoration: underline; }
-        .container { max-width: 1000px; margin: 30px auto; padding: 20px; text-align: center; }
-        .video-box { background: white; padding: 25px; margin-top: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        iframe { width: 100%; max-width: 700px; height: 394px; border-radius: 5px; }
-        #level-title { color: #0066cc; }
-    </style>
-</head>
-<body>
-
-    <header>
-        <h2>3SVK.tech</h2>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="study.html">Study Hub</a>
-            <button onclick="handleLogout(event)" class="logout-link">Logout</button>
-        </nav>
-    </header>
-
-    <div class="container">
-        <h1 id="level-heading">Professional Study Portal</h1>
-        <p>Accessing verified curriculum and video instruction tracks.</p>
-
-        <div class="video-box">
-            <h3 id="level-title">Curated Professional Module</h3>
-            <!-- Replace YOUTUBE_VIDEO_ID with your specific playlist or video reference -->
-            <iframe src="https://www.youtube.com/embed/YOUTUBE_VIDEO_ID" 
-                    title="YouTube video player" frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen>
-            </iframe>
-        </div>
-    </div>
-
-    <script type="module">
+<script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
@@ -58,7 +15,7 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Security check: Redirect unauthenticated users back to index login
+        // Allows both Google users and Anonymous guests to access the study content
         onAuthStateChanged(auth, (user) => {
             if (!user) {
                 window.location.href = "index.html";
@@ -94,6 +51,3 @@
             document.getElementById('level-title').innerText = headings[level] + ' - Featured Lecture';
         }
     </script>
-
-</body>
-</html>
