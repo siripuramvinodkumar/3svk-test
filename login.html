@@ -6,14 +6,16 @@
 </head>
 <body>
     <h2>Sign in to 3SVK</h2>
-    <button onclick="loginWithGoogle()">Sign in with Google</button>
+    <!-- Dynamic button that changes based on auth state -->
+    <button id="authButton" onclick="handleAuth()">Sign in with Google</button>
+    <p id="userInfo"></p>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, GoogleAuthProvider, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
+            apiKey: "AIzaSyBbTBZlAA9sprHmHYIrOL9Ct1yBU8_gVOU",
             authDomain: "svk-auth.firebaseapp.com",
             projectId: "svk-auth",
             storageBucket: "svk-auth.firebasestorage.app",
@@ -26,28 +28,40 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        // 1. Automatically redirect if the user is already logged in
+        const authButton = document.getElementById("authButton");
+        const userInfo = document.getElementById("userInfo");
+
+        // Handle redirect result after Google returns user back
+        getRedirectResult(auth).catch((error) => {
+            console.error("Login Redirect Error: ", error.message);
+        });
+
+        // Listen for user login/logout state changes live on the page
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                window.location.href = "study.html";
+                // User is signed in -> Show Logout option and user info
+                authButton.innerText = "Logout";
+                userInfo.innerText = "Logged in as: " + (user.displayName || user.email);
+            } else {
+                // User is signed out -> Show Sign-in option
+                authButton.innerText = "Sign in with Google";
+                userInfo.innerText = "";
             }
         });
 
-        // 2. Handle the redirect result when coming back from Google login
-        getRedirectResult(auth)
-            .then((result) => {
-                if (result) {
-                    window.location.href = "study.html";
-                }
-            })
-            .catch((error) => {
-                console.error("Login Redirect Error: ", error.message);
-                alert("Login failed: " + error.message);
-            });
-
-        // 3. Trigger Google Sign In
-        window.loginWithGoogle = function() {
-            signInWithRedirect(auth, provider);
+        // Unified button click handler for both Login and Logout
+        window.handleAuth = function() {
+            if (auth.currentUser) {
+                // If logged in, perform logout
+                signOut(auth).then(() => {
+                    alert("Logged out successfully.");
+                }).catch((error) => {
+                    console.error("Logout Error: ", error);
+                });
+            } else {
+                // If logged out, start Google Sign-in redirect
+                signInWithRedirect(auth, provider);
+            }
         };
     </script>
 </body>
