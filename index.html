@@ -14,10 +14,10 @@
         /* Side-by-side Layout */
         .login-layout { display: flex; flex-direction: row; gap: 30px; justify-content: center; align-items: flex-start; margin-top: 20px; flex-wrap: wrap; }
         .news-sidebar { flex: 1; min-width: 320px; max-width: 500px; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: left; }
+        .news-sidebar h3 { color: #0066cc; border-bottom: 2px solid #e9ecef; padding-bottom: 8px; margin-top: 0; }
         
-        .news-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #e9ecef; padding-bottom: 8px; }
-        .news-header-flex h3 { color: #0066cc; margin: 0; border: none; padding: 0; }
-        .country-select { padding: 5px 10px; border-radius: 4px; border: 1px solid #ced4da; font-weight: bold; color: #0066cc; cursor: pointer; background: #f8f9fa; }
+        .news-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .country-select { padding: 5px 10px; border-radius: 4px; border: 1px solid #ced4da; font-weight: bold; color: #0066cc; cursor: pointer; max-width: 180px; }
         .news-content { height: 260px; overflow-y: auto; }
         
         .auth-card { flex: 1; min-width: 300px; max-width: 400px; background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
@@ -50,19 +50,41 @@
             Verifying session...
         </div>
 
-        <!-- Login Screen with Regional Country Filter News Sidebar -->
+        <!-- Login Screen with Worldwide Country Dropdown News Sidebar -->
         <div id="loginView" style="display: none;" class="login-layout">
             
-            <!-- Left Sidebar: Country-Wise News Feed -->
+            <!-- Left Sidebar: Comprehensive Country-Wise News Feed -->
             <div class="news-sidebar">
                 <div class="news-header-flex">
-                    <h3>🌐 Regional News</h3>
+                    <h3 style="margin: 0; border: none;">🌐 Regional News</h3>
                     <select id="countrySelect" class="country-select" onchange="changeCountryNews()">
                         <option value="in" selected>🇮🇳 India</option>
                         <option value="us">🇺🇸 United States</option>
                         <option value="gb">🇬🇧 United Kingdom</option>
                         <option value="ca">🇨🇦 Canada</option>
                         <option value="au">🇦🇺 Australia</option>
+                        <option value="ae">🇦🇪 United Arab Emirates</option>
+                        <option value="br">🇧🇷 Brazil</option>
+                        <option value="cn">🇨🇳 China</option>
+                        <option value="fr">🇫🇷 France</option>
+                        <option value="de">🇩🇪 Germany</option>
+                        <option value="it">🇮🇹 Italy</option>
+                        <option value="jp">🇯🇵 Japan</option>
+                        <option value="mx">🇲🇽 Mexico</option>
+                        <option value="nl">🇳🇱 Netherlands</option>
+                        <option value="nz">🇳🇿 New Zealand</option>
+                        <option value="pk">🇵🇰 Pakistan</option>
+                        <option value="ph">🇵🇭 Philippines</option>
+                        <option value="ru">🇷🇺 Russia</option>
+                        <option value="sg">🇸🇬 Singapore</option>
+                        <option value="za">🇿🇦 South Africa</option>
+                        <option value="kr">🇰🇷 South Korea</option>
+                        <option value="es">🇪🇸 Spain</option>
+                        <option value="se">🇸🇪 Sweden</option>
+                        <option value="ch">🇨🇭 Switzerland</option>
+                        <option value="tw">🇹🇼 Taiwan</option>
+                        <option value="tr">🇹🇷 Turkey</option>
+                        <option value="ua">🇺🇦 Ukraine</option>
                     </select>
                 </div>
                 <div id="newsTicker" class="news-content" style="font-size: 14px; color: #555;">
@@ -151,7 +173,7 @@
         const headerLogoutBtn = document.getElementById("headerLogoutBtn");
         const welcomeMsg = document.getElementById("welcomeMsg");
 
-        // Fetch Regional News based on selected country dropdown
+        // Fetch Regional News based on the expanded country dropdown
         window.fetchTrendingNews = async function() {
             const newsContainer = document.getElementById("newsTicker");
             const country = document.getElementById("countrySelect").value;
@@ -172,7 +194,7 @@
                     newsHtml += "</ul>";
                     newsContainer.innerHTML = newsHtml;
                 } else {
-                    newsContainer.innerHTML = "No live news available for this region right now.";
+                    newsContainer.innerHTML = "No live news available for this country right now.";
                 }
             } catch (error) {
                 console.error("Error fetching news:", error);
