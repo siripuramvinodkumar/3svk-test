@@ -2,17 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>3SVK - Study Portal & Videos</title>
+    <title>3SVK - Professional Study Materials</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; background-color: #f8f9fa; color: #333; }
         header { background: #0066cc; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
         nav { display: flex; align-items: center; gap: 20px; }
-        nav a { color: white; text-decoration: none; font-weight: bold; }
-        nav a:hover { text-decoration: underline; }
+        nav a, nav button.logout-link { color: white; text-decoration: none; font-weight: bold; background: none; border: none; cursor: pointer; font-size: 16px; padding: 0; }
+        nav a:hover, nav button.logout-link:hover { text-decoration: underline; }
         .container { max-width: 1000px; margin: 30px auto; padding: 20px; text-align: center; }
-        .video-box { background: white; padding: 20px; margin-top: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        iframe { width: 100%; max-width: 560px; height: 315px; border-radius: 5px; }
-        #level-title { color: #0066cc; text-transform: capitalize; }
+        .video-box { background: white; padding: 25px; margin-top: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        iframe { width: 100%; max-width: 700px; height: 394px; border-radius: 5px; }
+        #level-title { color: #0066cc; }
     </style>
 </head>
 <body>
@@ -21,18 +21,18 @@
         <h2>3SVK.tech</h2>
         <nav>
             <a href="index.html">Home</a>
-            <a href="study.html">Study</a>
-            <a href="#" onclick="handleLogout(event)">Logout</a>
+            <a href="study.html">Study Hub</a>
+            <button onclick="handleLogout(event)" class="logout-link">Logout</button>
         </nav>
     </header>
 
     <div class="container">
-        <h1 id="level-heading">Study Portal - Video Lessons</h1>
-        <p>Watch curated YouTube tutorials here to learn and support the platform!</p>
+        <h1 id="level-heading">Professional Study Portal</h1>
+        <p>Accessing verified curriculum and video instruction tracks.</p>
 
         <div class="video-box">
-            <h3 id="level-title">Featured Lesson</h3>
-            <!-- Replace YOUTUBE_VIDEO_ID with your actual video ID -->
+            <h3 id="level-title">Curated Professional Module</h3>
+            <!-- Replace YOUTUBE_VIDEO_ID with your specific playlist or video reference -->
             <iframe src="https://www.youtube.com/embed/YOUTUBE_VIDEO_ID" 
                     title="YouTube video player" frameborder="0" 
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
@@ -58,14 +58,13 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        // Security check: If user is not logged in, boot them back to index.html login page
+        // Security check: Redirect unauthenticated users back to index login
         onAuthStateChanged(auth, (user) => {
             if (!user) {
                 window.location.href = "index.html";
             }
         });
 
-        // Global logout function for the study navigation bar
         window.handleLogout = function(event) {
             event.preventDefault();
             signOut(auth).then(() => {
@@ -75,21 +74,24 @@
             });
         };
 
-        // Dynamic category heading handler
         const urlParams = new URLSearchParams(window.location.search);
         const level = urlParams.get('level');
 
         const headings = {
-            'kg': 'KG & Primary Study Material',
-            'highschool': 'High School (Grades 6-10) Lessons',
-            'intermediate': 'Intermediate / 10+2 Classes',
-            'ug': 'Undergraduate (UG / B.Tech) Lectures',
-            'pg': 'Postgraduate (PG) Research & Advanced Modules'
+            'kg': 'KG & Primary Foundations Curriculum',
+            'highschool': 'High School STEM Module (Grades 6-10)',
+            'intermediate-mpc': 'Intermediate MPC (Math, Physics, Chemistry)',
+            'intermediate-bpc': 'Intermediate BPC (Biology & Core Sciences)',
+            'ug-cse': 'Undergraduate Computer Science & Cyber Security Track',
+            'ug-mech': 'Undergraduate Mechanical Engineering Track',
+            'ug-ece': 'Undergraduate Electronics & Communication Track',
+            'pg-ai': 'Postgraduate Artificial Intelligence & Data Science',
+            'pg-research': 'Postgraduate Technical Research & Paper Guides'
         };
 
         if (level && headings[level]) {
             document.getElementById('level-heading').innerText = headings[level];
-            document.getElementById('level-title').innerText = level.toUpperCase() + ' Curated Playlist / Video';
+            document.getElementById('level-title').innerText = headings[level] + ' - Featured Lecture';
         }
     </script>
 
