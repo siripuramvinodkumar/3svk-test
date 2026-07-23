@@ -1,8 +1,41 @@
-<div style="margin-top: 40px;">
-    <h3>Featured Video Lesson</h3>
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_YOUTUBE_VIDEO_ID" 
-            title="YouTube video player" frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-    </iframe>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>3SVK - Study Portal & Videos</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f8f9fa; color: #333; }
+        header { background: #0066cc; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: bold; }
+        .container { max-width: 1000px; margin: 30px auto; padding: 20px; text-align: center; }
+        .video-box { background: white; padding: 20px; margin-top: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        iframe { width: 100%; max-width: 560px; height: 315px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>3SVK.tech</h2>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="study.html">Study</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Study Portal - Video Lessons</h1>
+        <p>Watch tutorials here to support the platform and learn!</p>
+
+        <div class="video-box">
+            <h3>Featured Lesson</h3>
+            <!-- Replace YOUTUBE_VIDEO_ID with your actual video ID -->
+            <iframe src="https://www.youtube.com/embed/YOUTUBE_VIDEO_ID" 
+                    title="YouTube video player" frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+
+</body>
+</html>
