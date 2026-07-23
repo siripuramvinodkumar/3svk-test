@@ -191,22 +191,23 @@
             fetchNewsForCountry(countryCode);
         }
 
-        // Fetch live news using World News API with country filter
+        // Fetch live news using CORS proxy to bypass browser restrictions completely
         async function fetchNewsForCountry(countryCode) {
             const newsContainer = document.getElementById("newsTicker");
             const API_KEY = "1a1c64d25510487da5527ffdc221d15"; 
-            const url = `https://api.worldnewsapi.com/search-news?source-country=${countryCode}&language=en&number=5&api-key=${API_KEY}`;
+            const targetUrl = `https://api.worldnewsapi.com/search-news?source-country=${countryCode}&language=en&number=5&api-key=${API_KEY}`;
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
 
             newsContainer.innerHTML = "Loading live news...";
 
             try {
-                const response = await fetch(url);
+                const response = await fetch(proxyUrl);
                 const data = await response.json();
                 
                 if (data && data.news && data.news.length > 0) {
                     let newsHtml = "<ul style='padding-left: 15px; margin: 0;'>";
                     data.news.forEach(article => {
-                        newsHtml += `<li style="margin-bottom: 10px;"><a href="${article.url}" target="_blank" style="color: #0066cc; text-decoration: none; font-weight: bold; font-size: 11px;">${article.title}</a><br><span style="font-size: 10px; color: #888;">Source: ${article.source_country.toUpperCase()}</span></li>`;
+                        newsHtml += `<li style="margin-bottom: 10px;"><a href="${article.url}" target="_blank" style="color: #0066cc; text-decoration: none; font-weight: bold; font-size: 11px;">${article.title}</a><br><span style="font-size: 10px; color: #888;">Source: ${article.source_country ? article.source_country.toUpperCase() : 'Global'}</span></li>`;
                     });
                     newsHtml += "</ul>";
                     newsContainer.innerHTML = newsHtml;
